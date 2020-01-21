@@ -1,0 +1,13 @@
+BasedOnStyle: Google
+IndentWidth: 4
+ColumnLimit: 0
+
+Language: Cpp
+
+DerivePointerAlignment: false
+PointerAlignment: Left
+IncludeBlocks: Regroup
+BreakBeforeBraces: Attach
+SpaceBeforeAssignmentOperators: true
+
+# ReflowComments: true
