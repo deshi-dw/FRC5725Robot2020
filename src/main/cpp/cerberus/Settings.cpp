@@ -7,19 +7,29 @@
 using namespace std;
 
 namespace Settings {
-void Load(const string path, const string configName) {
-	Files::ReadFile(path);
+void Load(const string path) {
+    Files::ReadFile(path);
 }
 
 void UnloadAll() {
 }
 
-template <typename T>
-const T Get(string setting) {
-    return *(T*)values[setting];
+template <typename T> const T Get(string setting) {
+    return *(T*)settings[setting];
 }
 
-namespace {
+template <> const int Get<int>(string setting) {
+    return *(int*)settings[setting];
+}
+
+template <> const double Get<double>(string setting) {
+    return *(double*)settings[setting];
+}
+
+template <> const string Get<string>(string setting) {
+    return *(string*)settings[setting];
+}
+
 int Parse(const string& data, const string& parent, int start, int end) {
     for (int i = start; i < end; i++) {
         if (data[i] == '{') {
@@ -149,5 +159,4 @@ string GetValue(const string& data, int start) {
 
     return string();
 }
-}  // namespace
 }  // namespace Settings

@@ -1,7 +1,10 @@
 #include <cerberus/Hardware.h>
 
 #include <frc/Spark.h>
+#include <frc/VictorSP.h>
 #include <frc/Victor.h>
+#include <frc/Talon.h>
+#include <frc/Jaguar.h>
 
 using namespace std;
 
@@ -27,6 +30,37 @@ namespace Hardware {
 		// Store a Victor pwm in memory and assign it's memory address to ptr_pwms[pin].
 		frc::Victor pwm = frc::Victor(pin);
 		ptr_pwms[pin] = &pwm;
+
+		return true;
+	}
+
+	template <class T> bool Add(int pin) {
+		printf("Supplied class is not a valid hardware interface.");
+		return false;
+	}
+	template<> bool Add<frc::Spark>(int pin) {
+		return InternalAdd(pin, new frc::Spark(pin));
+	}
+	template<> bool Add<frc::Victor>(int pin) {
+		return InternalAdd(pin, new frc::Victor(pin));
+	}
+	template<> bool Add<frc::VictorSP>(int pin) {
+		return InternalAdd(pin, new frc::VictorSP(pin));
+	}
+	template<> bool Add<frc::Talon>(int pin) {
+		return InternalAdd(pin, new frc::Talon(pin));
+	}
+	template<> bool Add<frc::Jaguar>(int pin) {
+		return InternalAdd(pin, new frc::Jaguar(pin));
+	}
+
+	inline bool InternalAdd(int pin, frc::PWMSpeedController* pwm) {
+		// If a PWM already exists in the pin index, return false.
+		if( ! IsPWMEmpty(pin)) {
+			delete pwm;
+			return false;
+		}
+		ptr_pwms[pin] = pwm;
 
 		return true;
 	}
