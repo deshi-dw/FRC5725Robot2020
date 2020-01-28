@@ -3,7 +3,7 @@
 
 namespace Events {
 
-int Add(Event& event) {
+int Add(Event* event) {
     if (isUpdating == false) {
 		// If the events aren't being updated, add the event to the event list.
         events.push_back(event);
@@ -29,6 +29,10 @@ void Remove(int id) {
     }
 }
 
+Event* Get(int id) {
+	return events[id];
+}
+
 void Clear() {
     if (isUpdating == false) {
         // If the events aren't being updated, clear them.
@@ -42,20 +46,20 @@ void Clear() {
 void Update() {
     // Loop through each stored event.
     isUpdating = true;
-    for (Event event : events) {
-        if (event.isEnabled == true && event.Condition() == true) {
+    for (int i = 0; i < events.size(); i++) {
+        if (events[i]->isEnabled == true && events[i]->Condition() == true) {
             // If the event condition is true and the event is enabled,
-            if (event.hasFiredOnce == true) {
+            if (events[i]->hasFiredOnce == true) {
                 // If initalize has been called, update the event.
-                event.Update();
+                events[i]->Update();
             } else {
                 // If the event hasn't been called since condition was true, call initalize.
-                event.Initialize();
-                event.hasFiredOnce = true;
+                events[i]->Initialize();
+                events[i]->hasFiredOnce = true;
             }
-        } else if (event.hasFiredOnce == true) {
+        } else if (events[i]->hasFiredOnce == true) {
             // If the event's condition is false and it has fired before, set has fired to false.
-            event.hasFiredOnce = false;
+            events[i]->hasFiredOnce = false;
         }
     }
     isUpdating = false;

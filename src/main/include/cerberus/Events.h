@@ -14,7 +14,7 @@ namespace {
 /**
  * A list of Event objects. All events in this list will be updated each Update call.
  */
-std::vector<Event> events = std::vector<Event>(EVENT_RESERVE_COUNT);
+std::vector<Event*> events = std::vector<Event*>(EVENT_RESERVE_COUNT);
 
 /**
  * A list of functions to trigger after the event list is updated.
@@ -47,6 +47,14 @@ int Add(Event& event);
  * @param id: The id of the event to remove. This is got from the Event::Add(Event& event) function return value.
  */
 void Remove(int id);
+
+/**
+ * Get an event by its id.
+ * 
+ * @param id: The id of the event to return.
+ * @return the Event tied to the provided id.
+ */
+Event* Get(int id);
 
 /**
  * Clears all events from the event list. If the list is currently being updates, it will be cleared after the update.
