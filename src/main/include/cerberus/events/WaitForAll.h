@@ -4,7 +4,7 @@
 
 #include <cerberus/Event.h>
 
-class WaitForAll : Events::Event {
+class WaitForAll : public Events::Event {
 	public:
 	WaitForAll(std::vector<Event> &events);
 
