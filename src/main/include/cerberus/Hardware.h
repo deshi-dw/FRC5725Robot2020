@@ -1,7 +1,13 @@
 #pragma once
 
-#include <frc/PWMSpeedController.h>
 #include <vector>
+
+#include <frc/PWMSpeedController.h>
+#include <frc/Spark.h>
+#include <frc/VictorSP.h>
+#include <frc/Victor.h>
+#include <frc/Talon.h>
+#include <frc/Jaguar.h>
 
 using namespace std;
 
@@ -31,6 +37,15 @@ bool AddPWMSpark(int pin);
  *
  */
 bool AddPWMVictor(int pin);
+
+template <class T> bool Add(int pin);
+template<> bool Add<frc::Spark>(int pin);
+template<> bool Add<frc::Victor>(int pin);
+template<> bool Add<frc::VictorSP>(int pin);
+template<> bool Add<frc::Talon>(int pin);
+template<> bool Add<frc::Jaguar>(int pin);
+
+inline bool InternalAdd(int pin, frc::PWMSpeedController* pwm);
 
 /** @brief Removes a PWM from the PWM list by its pin.
  *
