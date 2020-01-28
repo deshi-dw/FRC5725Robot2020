@@ -7,12 +7,12 @@
 
 using namespace std;
 
-namespace util {
+namespace Files {
 	// TODO: Write FileExists description.
 	bool FileExists (const string& path);
 
 	// TODO: Write ReadFile description.
-	string& ReadFile(const string& path);
+	string ReadFile(const string& path);
 
 	// TODO: Write DeleteFile description.
 	bool DeleteFile(const string& path);
