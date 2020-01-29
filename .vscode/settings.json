@@ -93,7 +93,8 @@
 		"xmemory": "cpp",
 		"xstddef": "cpp",
 		"xtr1common": "cpp",
-		"xutility": "cpp"
+		"xutility": "cpp",
+		"*.inc": "cpp"
 	},
 	"C_Cpp.clang_format_style": "file",
 	"C_Cpp.default.configurationProvider": "vscode-wpilib"
