@@ -13,8 +13,9 @@
 using namespace std;
 using namespace wpi;
 
-namespace Networking {
-void AcceptNewClient();
+namespace net {
+// TODO: remove this line when moving to a .cpp file.
+void acceptNewClient();
 
 namespace {
 static vector<unique_ptr<NetworkStream>> clients;
@@ -28,21 +29,21 @@ static bool shouldRepalceDuplicateIps = false;
 NetworkStream::Error lastError;
 }  // namespace
 
-void Initalize() {
+void initialize() {
     tcp = new TCPAcceptor(robot_port, nullptr, logger);
     tcp->start();
 }
 
-void Deinitalize() {
+void deinitialize() {
     tcp->shutdown();
 	delete tcp;
 }
 
-void Update() {
-    AcceptNewClient();
+void update() {
+    acceptNewClient();
 }
 
-int Size() {
+int size() {
 	return clients.size();
 }
 
@@ -50,11 +51,11 @@ NetworkStream::Error GetLastError() {
 	return lastError;
 }
 
-int Read(int index, char* data, int length) {
+int read(int index, char* data, int length) {
     return clients[index]->receive(data, length, &lastError, 0);
 }
 
-int Read(const char* ip, char* data, int length) {
+int read(const char* ip, char* data, int length) {
     for (std::size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->getPeerIP().data() == ip) {
             return clients[i]->receive(data, length, &lastError, 0);
@@ -64,7 +65,7 @@ int Read(const char* ip, char* data, int length) {
 	return -1;
 }
 
-int Write(const char* ip, char* data, int length) {
+int write(const char* ip, char* data, int length) {
     for (std::size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->getPeerIP().data() == ip) {
             return clients[i]->send(data, length, &lastError);
@@ -74,11 +75,11 @@ int Write(const char* ip, char* data, int length) {
 	return -1;
 }
 
-int Write(int index, char* data, int length) {
+int write(int index, char* data, int length) {
     return clients[index]->send(data, length, &lastError);
 }
 
-void Close(const char* ip) {
+void close(const char* ip) {
     for (std::size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->getPeerIP().data() == ip) {
             clients[i]->close();
@@ -89,7 +90,7 @@ void Close(const char* ip) {
     }
 }
 
-void CloseAll() {
+void closeAll() {
     for (std::size_t i = 0; i < clients.size(); i++) {
         clients[i]->close();
         clients[i].release();
@@ -98,7 +99,7 @@ void CloseAll() {
 	clients.clear();
 }
 
-void AcceptNewClient() {
+void acceptNewClient() {
     unique_ptr<NetworkStream> client = tcp->accept();
 
     if (client != nullptr) {
@@ -123,11 +124,11 @@ void AcceptNewClient() {
     }
 }
 
-const char* GetRobotIp() {
+const char* getRobotIp() {
     return robot_ip;
 }
 
-int GetRobotPort() {
+int getRobotPort() {
     return robot_port;
 }
 

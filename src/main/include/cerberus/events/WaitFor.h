@@ -2,7 +2,7 @@
 
 #include <cerberus/Event.h>
 
-class WaitFor : public Events::Event {
+class WaitFor : public events::Event {
 	public:
 	WaitFor(Event& event);
 

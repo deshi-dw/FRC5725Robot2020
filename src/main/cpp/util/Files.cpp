@@ -8,9 +8,9 @@
 
 using namespace std;
 
-namespace Files {
+namespace files {
 
-bool CreateFile(const string& path) {
+bool createFile(const string& path) {
     // Open a file with the specified path under write mode.
     // This will create a file if non are present under that name.
     FILE* file = fopen(path.c_str(), "w");
@@ -26,7 +26,7 @@ bool CreateFile(const string& path) {
     }
 }
 
-bool DeleteFile(const string& path) {
+bool deleteFile(const string& path) {
     if (remove(path.c_str()) == 0) {
         // If the file is removed, return true.
         // TODO: Log deletion of file.
@@ -38,7 +38,7 @@ bool DeleteFile(const string& path) {
     }
 }
 
-string ReadFile(const string& path) {
+string readFile(const string& path) {
     // Open the file specifed under read mode.
     FILE* file = fopen(path.c_str(), "r");
     string sbuffer;
@@ -72,7 +72,7 @@ string ReadFile(const string& path) {
     }
 }
 
-bool FileExists(const string& path) {
+bool fileExists(const string& path) {
     // Open the file specifed under read mode.
     FILE* file = fopen(path.c_str(), "r");
 

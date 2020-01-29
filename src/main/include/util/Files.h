@@ -7,16 +7,16 @@
 
 using namespace std;
 
-namespace Files {
+namespace files {
 	// TODO: Write FileExists description.
-	bool FileExists (const string& path);
+	bool fileExists (const string& path);
 
 	// TODO: Write ReadFile description.
-	string ReadFile(const string& path);
+	string readFile(const string& path);
 
 	// TODO: Write DeleteFile description.
-	bool DeleteFile(const string& path);
+	bool deleteFile(const string& path);
 
 	// TODO: Write CreateFile description.
-	bool CreateFile(const string& path);
+	bool createFile(const string& path);
 }

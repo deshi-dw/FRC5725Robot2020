@@ -6,48 +6,49 @@
 
 using namespace std;
 
-namespace Settings {
-void Load(const string path) {
-    Files::ReadFile(path);
+namespace cfg {
+void load(const string path) {
+	string data = files::readFile(path);
+    parse(data, string(), 0, data.size());
 }
 
-void UnloadAll() {
+void unloadAll() {
 }
 
-template <typename T> const T Get(string setting) {
+template <typename T> const T get(string setting) {
     return *(T*)settings[setting];
 }
 
-template <> const int Get<int>(string setting) {
+template <> const int get<int>(string setting) {
     return *(int*)settings[setting];
 }
 
-template <> const double Get<double>(string setting) {
+template <> const double get<double>(string setting) {
     return *(double*)settings[setting];
 }
 
-template <> const string Get<string>(string setting) {
+template <> const string get<string>(string setting) {
     return *(string*)settings[setting];
 }
 
-int Parse(const string& data, const string& parent, int start, int end) {
+int parse(const string& data, const string& parent, int start, int end) {
     for (int i = start; i < end; i++) {
         if (data[i] == '{') {
-            string name = GetName(data, i - 1);
+            string name = getName(data, i - 1);
             if (parent.empty() == true) {
-                i = Parse(data, name, i + 1, GetEndBracket(data, i + 1));
+                i = parse(data, name, i + 1, getEndBracket(data, i + 1));
             } else {
-                i = Parse(data, parent + sep + name, i + 1, GetEndBracket(data, i + 1));
+                i = parse(data, parent + sep + name, i + 1, getEndBracket(data, i + 1));
             }
         } else if (data[i] == ':') {
-            string name = GetName(data, i - 1);
-            string svalue = GetValue(data, i + 1);
+            string name = getName(data, i - 1);
+            string svalue = getValue(data, i + 1);
 
             if (parent.empty() == false) {
                 name = parent + sep + name;
             }
 
-            settings[name] = ParseValue(svalue);
+            settings[name] = parseValue(svalue);
 
             i += svalue.size();
         }
@@ -56,7 +57,7 @@ int Parse(const string& data, const string& parent, int start, int end) {
     return end + 1;
 }
 
-void* ParseValue(const string& svalue) {
+void* parseValue(const string& svalue) {
     void* value = nullptr;
 
     // cout << name << " = ";
@@ -67,9 +68,9 @@ void* ParseValue(const string& svalue) {
         int start = 1;
 
         value = new vector<void*>();
-        for (int i = 1; i < svalue.size(); i++) {
+        for (size_t i = 1; i < svalue.size(); i++) {
             if (svalue[i] == ',' || svalue[i] == ']') {
-                (*(vector<void*>*)value).push_back(ParseValue(svalue.substr(start, i - start)));
+                (*(vector<void*>*)value).push_back(parseValue(svalue.substr(start, i - start)));
                 start = i + 1;
             }
         }
@@ -80,7 +81,7 @@ void* ParseValue(const string& svalue) {
     } else if (svalue[0] >= '0' && svalue[0] <= '9') {
         bool isDecimal = false;
 
-        for (int i = 1; i < svalue.size(); i++) {
+        for (size_t i = 1; i < svalue.size(); i++) {
             if (svalue[i] == '.') {
                 isDecimal = true;
                 break;
@@ -96,14 +97,14 @@ void* ParseValue(const string& svalue) {
     return value;
 }
 
-bool IsDelimiter(const char& c) {
+bool isDelimiter(const char& c) {
     return c == ',' || c == ':' || c == '{' || c == '}';
 }
 
-int GetEndBracket(const string& data, int start) {
+int getEndBracket(const string& data, int start) {
     int depth = 1;
 
-    for (int i = start; i < data.size(); i++) {
+    for (size_t i = start; i < data.size(); i++) {
         if (data[i] == '}') {
             depth--;
 
@@ -118,9 +119,9 @@ int GetEndBracket(const string& data, int start) {
     return start;
 }
 
-string GetName(const string& data, int start) {
+string getName(const string& data, int start) {
     for (int i = start; i >= 0; i--) {
-        if (IsDelimiter(data[i]) == true) {
+        if (isDelimiter(data[i]) == true) {
             if (i == start) {
                 return string();
             } else {
@@ -138,11 +139,11 @@ string GetName(const string& data, int start) {
     return string();
 }
 
-string GetValue(const string& data, int start) {
+string getValue(const string& data, int start) {
     bool isString = false;
     int arrayLevel = 0;
-    for (int i = start; i < data.size(); i++) {
-        if (IsDelimiter(data[i]) == true && isString == false && arrayLevel == 0) {
+    for (size_t i = start; i < data.size(); i++) {
+        if (isDelimiter(data[i]) == true && isString == false && arrayLevel == 0) {
             if (i == start) {
                 return string();
             } else {

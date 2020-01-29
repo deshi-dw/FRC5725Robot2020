@@ -8,10 +8,10 @@
 
 using namespace std;
 
-namespace Hardware {
-	bool AddPWMSpark(int pin) {
+namespace hardware {
+	bool addPWMSpark(int pin) {
 		// If a PWM already exists in the pin index, return false.
-		if( ! IsPWMEmpty(pin)) {
+		if( ! isPWMEmpty(pin)) {
 			return false;
 		}
 
@@ -21,9 +21,9 @@ namespace Hardware {
 		return true;
 	}
 
-	bool AddPWMVictor(int pin) {
+	bool addPWMVictor(int pin) {
 		// If a PWM already exists in the pin index, return false.
-		if( ! IsPWMEmpty(pin)) {
+		if( ! isPWMEmpty(pin)) {
 			return false;
 		}
 
@@ -39,24 +39,24 @@ namespace Hardware {
 		return false;
 	}
 	template<> bool Add<frc::Spark>(int pin) {
-		return InternalAdd(pin, new frc::Spark(pin));
+		return internalAdd(pin, new frc::Spark(pin));
 	}
 	template<> bool Add<frc::Victor>(int pin) {
-		return InternalAdd(pin, new frc::Victor(pin));
+		return internalAdd(pin, new frc::Victor(pin));
 	}
 	template<> bool Add<frc::VictorSP>(int pin) {
-		return InternalAdd(pin, new frc::VictorSP(pin));
+		return internalAdd(pin, new frc::VictorSP(pin));
 	}
 	template<> bool Add<frc::Talon>(int pin) {
-		return InternalAdd(pin, new frc::Talon(pin));
+		return internalAdd(pin, new frc::Talon(pin));
 	}
 	template<> bool Add<frc::Jaguar>(int pin) {
-		return InternalAdd(pin, new frc::Jaguar(pin));
+		return internalAdd(pin, new frc::Jaguar(pin));
 	}
 
-	inline bool InternalAdd(int pin, frc::PWMSpeedController* pwm) {
+	inline bool internalAdd(int pin, frc::PWMSpeedController* pwm) {
 		// If a PWM already exists in the pin index, return false.
-		if( ! IsPWMEmpty(pin)) {
+		if( ! isPWMEmpty(pin)) {
 			delete pwm;
 			return false;
 		}
@@ -65,17 +65,17 @@ namespace Hardware {
 		return true;
 	}
 
-	void SetPWMSpeed(int pin, double speed) {
+	void setPWMSpeed(int pin, double speed) {
 		ptr_pwms[pin]->SetSpeed(speed);
 	}
 
-	double GetPWMSpeed(int pin) {
+	double getPWMSpeed(int pin) {
 		return ptr_pwms[pin]->GetSpeed();
 	}
 
-	bool RemovePWM(int pin) {
+	bool removePWM(int pin) {
 		// If the pwm trying to be removed doesn't exist, return false.
-		if(IsPWMEmpty(pin)) {
+		if(isPWMEmpty(pin)) {
 			return false;
 		}
 
@@ -86,16 +86,16 @@ namespace Hardware {
 		return true;
 	}
 
-	frc::PWMSpeedController* GetPWM(int pin) {
+	frc::PWMSpeedController* getPWM(int pin) {
 		// If the pwm trying to be accessed doesn't exist, return null.
-		if(IsPWMEmpty(pin)) {
+		if(isPWMEmpty(pin)) {
 			return nullptr;
 		}
 
 		return ptr_pwms[pin];
 	}
 
-	bool IsPWMEmpty(int pin) {
+	bool isPWMEmpty(int pin) {
 		return pin > (int)ptr_pwms.size() || pin < 0 || ptr_pwms[pin] == nullptr;
 	}
 }

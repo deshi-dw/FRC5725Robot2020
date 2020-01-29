@@ -1,11 +1,12 @@
 #pragma once
 
-namespace Events {
+namespace events {
 	class Event {
 		public:
-			virtual bool Condition() = 0;
-			virtual void Initialize() = 0;
-			virtual void Update() = 0;
+			virtual bool condition() = 0;
+			virtual void initialize() = 0;
+			virtual void deinitialize() = 0;
+			virtual void update() = 0;
 
 			bool isEnabled = true;
 			bool hasFiredOnce = false;

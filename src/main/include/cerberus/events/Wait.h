@@ -2,7 +2,7 @@
 
 #include <cerberus/Event.h>
 
-class Wait : public Events::Event {
+class Wait : public events::Event {
 	public:
 	Wait(long time);
 

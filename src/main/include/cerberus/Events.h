@@ -3,13 +3,13 @@
 #include <functional>
 #include <vector>
 
-#include "Event.h"
+#include <cerberus/Event.h>
 
 #ifndef EVENT_RESERVE_COUNT
 #define EVENT_RESERVE_COUNT 32
 #endif
 
-namespace Events {
+namespace events {
 namespace {
 /**
  * A list of Event objects. All events in this list will be updated each Update call.
@@ -39,14 +39,14 @@ bool isUpdating = false;
  * 
  * @warning If this function was called during the event cycle, the event will be added to the list after the cycle has passed. This means that the id returned will not be valid until the update is over.
  */
-int Add(Event& event);
+int add(Event& event);
 
 /**
  * Removes the event referenced by the id provided. If the event list is being updated, it will be removed after the update.
  * 
  * @param id: The id of the event to remove. This is got from the Event::Add(Event& event) function return value.
  */
-void Remove(int id);
+void remove(int id);
 
 /**
  * Get an event by its id.
@@ -54,16 +54,16 @@ void Remove(int id);
  * @param id: The id of the event to return.
  * @return the Event tied to the provided id.
  */
-Event* Get(int id);
+Event* get(int id);
 
 /**
  * Clears all events from the event list. If the list is currently being updates, it will be cleared after the update.
  */
-void Clear();
+void clear();
 
 /**
  * Updates each event added to the event list. This should be called periodically throughout runtime.
  */
-void Update();
+void update();
 
 }  // namespace Events

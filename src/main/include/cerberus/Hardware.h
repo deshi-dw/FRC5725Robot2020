@@ -15,7 +15,7 @@ using namespace std;
 #define PWM_COUNT 9
 #endif
 
-namespace Hardware {
+namespace hardware {
 namespace {
 vector<frc::PWMSpeedController*> ptr_pwms = vector<frc::PWMSpeedController*>(PWM_COUNT);
 }
@@ -27,7 +27,7 @@ vector<frc::PWMSpeedController*> ptr_pwms = vector<frc::PWMSpeedController*>(PWM
  * @return false: if the PWM fails to get added.
  *
  */
-bool AddPWMSpark(int pin);
+bool addPWMSpark(int pin);
 
 /** @brief Adds a Victor PWM to the list of PWMs.
  *
@@ -36,16 +36,16 @@ bool AddPWMSpark(int pin);
  * @return false: if the PWM fails to get added.
  *
  */
-bool AddPWMVictor(int pin);
+bool addPWMVictor(int pin);
 
-template <class T> bool Add(int pin);
-template<> bool Add<frc::Spark>(int pin);
-template<> bool Add<frc::Victor>(int pin);
-template<> bool Add<frc::VictorSP>(int pin);
-template<> bool Add<frc::Talon>(int pin);
-template<> bool Add<frc::Jaguar>(int pin);
+template <class T> bool add(int pin);
+template<> bool add<frc::Spark>(int pin);
+template<> bool add<frc::Victor>(int pin);
+template<> bool add<frc::VictorSP>(int pin);
+template<> bool add<frc::Talon>(int pin);
+template<> bool add<frc::Jaguar>(int pin);
 
-inline bool InternalAdd(int pin, frc::PWMSpeedController* pwm);
+inline bool internalAdd(int pin, frc::PWMSpeedController* pwm);
 
 /** @brief Removes a PWM from the PWM list by its pin.
  *
@@ -54,19 +54,20 @@ inline bool InternalAdd(int pin, frc::PWMSpeedController* pwm);
  * @return false: if the PWM fails to get removed.
  *
  */
-bool RemovePWM(int pin);
+bool removePWM(int pin);
 
-bool IsPWMEmpty(int pin);
+bool isPWMEmpty(int pin);
 
-void SetPWMSpeed(int pin, double speed);
-double GetPWMSpeed(int pin);
+void setPWMSpeed(int pin, double speed);
+double getPWMSpeed(int pin);
 
+// TODO: Replace getPWM with get<T>.
 /** @brief Get a PWM from the PWM list by its pin.
  *
  * @param pin: the pin of the desired PWM.
  * @return frc::PWMSpeedController*: a pointer to the PWM with the pin or nullptr if the PWM doesn't exist.
  *
  */
-frc::PWMSpeedController* GetPWM(int pin);
+frc::PWMSpeedController* getPWM(int pin);
 
 }  // namespace Hardware
