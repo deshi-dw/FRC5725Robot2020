@@ -2,6 +2,7 @@
 
 // #include <netinet/tcp.h>
 #include <stdlib.h>
+
 #include <wpi/Logger.h>
 #include <wpi/NetworkStream.h>
 #include <wpi/TCPAcceptor.h>
@@ -13,34 +14,55 @@
 using namespace std;
 using namespace wpi;
 
+#define MAX_BUFFER_LENGTH 65536
+
 namespace net {
+// TODO: add UDP support.
+
 // TODO: remove this line when moving to a .cpp file.
 void acceptNewClient();
+void clearAllBuffers();
+
+static vector<char*> buffers;
 
 namespace {
-static vector<unique_ptr<NetworkStream>> clients;
-static TCPAcceptor* tcp;
-static Logger logger = Logger();
-static int robot_port = 6666;
-static char* robot_ip = (char*)"127.0.0.1";
+vector<unique_ptr<NetworkStream>> clients;
 
-static bool shouldRepalceDuplicateIps = false;
+std::unique_ptr<wpi::TCPAcceptor> tcp;
+Logger logger = Logger();
+int robot_port = 6666;
+// char robot_ip[] = "127.0.0.1";
+char robot_ip[] = "";
+
+bool shouldRepalceDuplicateIps = false;
 
 NetworkStream::Error lastError;
 }  // namespace
 
 void initialize() {
-    tcp = new TCPAcceptor(robot_port, nullptr, logger);
+	printf("Initializing networking system...\n");
+    // tcp = new TCPAcceptor(robot_port, robot_ip, logger);
+    // tcp = new TCPAcceptor(5800, "127.0.0.1", logger);
+	tcp = std::unique_ptr<wpi::TCPAcceptor>(new wpi::TCPAcceptor(5800, "", logger));
     tcp->start();
+	tcp->accept();
+	printf("The networking system has been initialized.\n");
+
 }
 
 void deinitialize() {
     tcp->shutdown();
-	delete tcp;
+	tcp.release();
 }
 
 void update() {
+	// FIXME: Loops through all clients and then loops through all buffers even though only 1 loop is required.
     acceptNewClient();
+
+	for(int i = 0; i < buffers.size(); i++) {
+		memset(buffers[i], 0, MAX_BUFFER_LENGTH);
+		size_t len = clients[i]->receive((char*)buffers[i], MAX_BUFFER_LENGTH, &lastError, 0);
+ 	}
 }
 
 int size() {
@@ -51,18 +73,14 @@ NetworkStream::Error GetLastError() {
 	return lastError;
 }
 
-int read(int index, char* data, int length) {
-    return clients[index]->receive(data, length, &lastError, 0);
-}
-
-int read(const char* ip, char* data, int length) {
+void* read(const char* ip) {
     for (std::size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->getPeerIP().data() == ip) {
-            return clients[i]->receive(data, length, &lastError, 0);
+			return buffers[i];
         }
     }
 
-	return -1;
+	return nullptr;
 }
 
 int write(const char* ip, char* data, int length) {
@@ -85,22 +103,37 @@ void close(const char* ip) {
             clients[i]->close();
             clients[i].release();
             clients.erase(clients.begin() + i);
+
+			free(buffers[i]);
+			buffers.erase(buffers.begin() + i);
+
+			// TODO: Log that the client was closed.
             return;
         }
     }
+
+	// TODO: Log that no client was closed.
 }
 
 void closeAll() {
     for (std::size_t i = 0; i < clients.size(); i++) {
         clients[i]->close();
         clients[i].release();
+
+		free(buffers[i]);
     }
 
 	clients.clear();
+	buffers.clear();
+
+	// TODO: Log that all clients have been closed.
 }
 
 void acceptNewClient() {
-    unique_ptr<NetworkStream> client = tcp->accept();
+    tcp->accept();
+    // unique_ptr<NetworkStream> client = tcp->accept();
+
+	unique_ptr<NetworkStream> client;
 
     if (client != nullptr) {
         bool isInClientList = false;
@@ -112,7 +145,14 @@ void acceptNewClient() {
                     clients[i]->close();
 
                     clients.erase(clients.begin() + i);
+					free(buffers[i]);
+					buffers.erase(buffers.begin() + i);
+
                     clients.push_back(std::move(client));
+                    buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
+					// TODO: Validate size by making sure clients.size() == buffers.size();
+
+					// TODO: Log that client has been replaced.
                     break;
                 }
             }
@@ -120,6 +160,10 @@ void acceptNewClient() {
 
         if (isInClientList == false) {
             clients.push_back(std::move(client));
+			buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
+			// TODO: Validate size by making sure clients.size() == buffers.size();
+
+			// TODO: Log that client has been added.
         }
     }
 }
