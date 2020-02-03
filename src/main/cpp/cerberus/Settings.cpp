@@ -1,6 +1,7 @@
 #include <cerberus/Settings.h>
 #include <util/Files.h>
 
+#include <string.h>
 #include <string>
 #include <vector>
 
@@ -8,27 +9,67 @@ using namespace std;
 
 namespace cfg {
 void load(const string path) {
-	string data = files::readFile(path);
+    string data = files::readFile(path);
     parse(data, string(), 0, data.size());
 }
 
 void unloadAll() {
 }
 
-template <typename T> const T get(string setting) {
-    return *(T*)settings[setting];
+template <typename T>
+const bool get(string setting, T& value) {
+    if (settings[setting] != nullptr) {
+        value = *(T*)settings[setting];
+        return true;
+    }
+
+    return false;
 }
 
-template <> const int get<int>(string setting) {
-    return *(int*)settings[setting];
+template <>
+const bool get<bool>(string setting, bool& value) {
+    if (settings[setting] != nullptr) {
+        value = *(bool*)settings[setting];
+        return true;
+    }
+
+    return false;
 }
 
-template <> const double get<double>(string setting) {
-    return *(double*)settings[setting];
+template <>
+const bool get<int>(string setting, int& value) {
+    if (settings[setting] != nullptr) {
+        value = *(int*)settings[setting];
+        return true;
+    }
+
+    return false;
 }
 
-template <> const string get<string>(string setting) {
-    return *(string*)settings[setting];
+template <>
+const bool get<double>(string setting, double& value) {
+    if (settings[setting] != nullptr) {
+        value = *(double*)settings[setting];
+        return true;
+    }
+
+    return false;
+}
+
+template <>
+const bool get<string>(string setting, string& value) {
+    if (settings[setting] != nullptr) {
+        value = *(string*)settings[setting];
+        return true;
+    }
+
+    return false;
+}
+
+template <typename T>
+const int getArray(string setting, T* value) {
+	value = *(T*)settings[setting]+1;
+    return *(int*)settings[setting]+0;
 }
 
 int parse(const string& data, const string& parent, int start, int end) {
@@ -67,11 +108,18 @@ void* parseValue(const string& svalue) {
         // cout << "array";
         int start = 1;
 
-        value = new vector<void*>();
-        for (size_t i = 1; i < svalue.size(); i++) {
+        int objectCount = getObjectCount(svalue, start);
+
+        value = malloc((objectCount + 1) * sizeof(void*));
+		memset(value, objectCount, 1);
+		int count = 1;
+
+        for (size_t i = start; i < svalue.size(); i++) {
             if (svalue[i] == ',' || svalue[i] == ']') {
-                (*(vector<void*>*)value).push_back(parseValue(svalue.substr(start, i - start)));
+                // (*(vector<void*>*)value).push_back(parseValue(svalue.substr(start, i - start)));
+				((void**)value)[count] = (void*) parseValue(svalue.substr(start, i - start));
                 start = i + 1;
+				count++;
             }
         }
     } else if (svalue[0] == 't') {
@@ -119,6 +167,28 @@ int getEndBracket(const string& data, int start) {
     return start;
 }
 
+int getObjectCount(const string& data, int start) {
+    int depth = 0;
+    int objectCount = 1;
+
+    for (size_t i = start; i < data.size(); i++) {
+        if (data[i] == ']') {
+            depth--;
+
+			if(depth == -1) {
+				return objectCount;
+			}
+
+        } else if (data[i] == '[') {
+            depth++;
+        } else if (depth == 0 && data[i] == ',') {
+            objectCount++;
+        }
+    }
+
+    return start;
+}
+
 string getName(const string& data, int start) {
     for (int i = start; i >= 0; i--) {
         if (isDelimiter(data[i]) == true) {
@@ -160,4 +230,4 @@ string getValue(const string& data, int start) {
 
     return string();
 }
-}  // namespace Settings
+}  // namespace cfg
