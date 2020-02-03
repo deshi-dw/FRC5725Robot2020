@@ -2,7 +2,6 @@
 #include <cerberus/Event.h>
 
 namespace events {
-
 int add(Event* event) {
     if (isUpdating == false) {
 		// If the events aren't being updated, add the event to the event list.
@@ -47,6 +46,7 @@ void update() {
     // Loop through each stored event.
     isUpdating = true;
     for (int i = 0; i < events.size(); i++) {
+		// FIXME: Add check to make sure events[i] isn't a nullptr.
         if (events[i]->isEnabled == true && events[i]->condition() == true) {
             // If the event condition is true and the event is enabled,
             if (events[i]->hasFiredOnce == true) {
@@ -67,7 +67,9 @@ void update() {
 
     // Do the tasks that were assigned to be completed after update and then clear them.
     for (std::function<void()> func : afterUpdate) {
-        func();
+		if(func) {
+       		func();
+		}
     }
     afterUpdate.clear();
 }
