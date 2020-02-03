@@ -14,14 +14,14 @@ namespace {
 /**
  * A list of Event objects. All events in this list will be updated each Update call.
  */
-std::vector<Event*> events = std::vector<Event*>(EVENT_RESERVE_COUNT);
+std::vector<Event*> events = std::vector<Event*>();
 
 /**
  * A list of functions to trigger after the event list is updated.
  * 
  * This is mostly used for manipulating the events list within an event from the events list without distrupting the update cycle.
  */
-std::vector<std::function<void()>> afterUpdate = std::vector<std::function<void()>>(2);
+std::vector<std::function<void()>> afterUpdate = std::vector<std::function<void()>>();
 
 /**
  * A simple check to see if the update loop is being executed or not.
@@ -39,7 +39,7 @@ bool isUpdating = false;
  * 
  * @warning If this function was called during the event cycle, the event will be added to the list after the cycle has passed. This means that the id returned will not be valid until the update is over.
  */
-int add(Event& event);
+int add(Event* event);
 
 /**
  * Removes the event referenced by the id provided. If the event list is being updated, it will be removed after the update.
