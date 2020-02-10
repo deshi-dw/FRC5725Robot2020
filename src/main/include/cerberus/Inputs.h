@@ -17,6 +17,7 @@ namespace input {
 		Digital(int axis) : axis(axis) {}
 	} Digital;
 
+	// TODO: Add multiplier atribute.
 	typedef struct Analog {
 		int axis = 0;
 		double value = 0;

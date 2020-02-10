@@ -10,6 +10,7 @@
 #include <frc/Jaguar.h>
 #include <rev/SparkMax.h>
 
+#include <frc/CAN.h>
 #include <frc/DigitalInput.h>
 #include <frc/DigitalOutput.h>
 
@@ -32,7 +33,7 @@ using namespace std;
 namespace hardware {
 namespace {
 vector<frc::PWM*> ptr_pwms = vector<frc::PWM*>(PWM_COUNT);
-vector<frc::DigitalInput*> ptr_dio = vector<frc::DigitalInput*>(DIO_COUNT);
+vector<frc::DigitalInput*> ptr_di = vector<frc::DigitalInput*>(DIO_COUNT);
 vector<frc::DigitalOutput*> ptr_do = vector<frc::DigitalOutput*>(DIO_COUNT);
 vector<frc::AnalogInput*> ptr_ai = vector<frc::AnalogInput*>(AIO_COUNT);
 }

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <vector>
 #include <frc/Joystick.h>
 #include <cerberus/Inputs.h>
