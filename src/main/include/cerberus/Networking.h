@@ -2,13 +2,14 @@
 
 // #include <netinet/tcp.h>
 #include <stdlib.h>
-
 #include <wpi/Logger.h>
 #include <wpi/NetworkStream.h>
 #include <wpi/TCPAcceptor.h>
+#include <wpi/TCPStream.h>
 #include <wpi/UDPClient.h>
 
 #include <string>
+#include <thread>
 #include <vector>
 
 using namespace std;
@@ -20,7 +21,7 @@ namespace net {
 // TODO: add UDP support.
 
 // TODO: remove this line when moving to a .cpp file.
-void acceptNewClient();
+void acceptNewClients();
 void clearAllBuffers();
 
 static vector<char*> buffers;
@@ -28,59 +29,58 @@ static vector<char*> buffers;
 namespace {
 vector<unique_ptr<NetworkStream>> clients;
 
-std::unique_ptr<wpi::TCPAcceptor> tcp;
 Logger logger = Logger();
+wpi::TCPAcceptor* tcp;
 int robot_port = 6666;
 // char robot_ip[] = "127.0.0.1";
 char robot_ip[] = "";
 
 bool shouldRepalceDuplicateIps = false;
+bool isUpdating = false;
+bool isNetworkActive = false;
 
 NetworkStream::Error lastError;
+
+std::thread net_thread;
 }  // namespace
 
 void initialize() {
-	printf("Initializing networking system...\n");
-    // tcp = new TCPAcceptor(robot_port, robot_ip, logger);
-    // tcp = new TCPAcceptor(5800, "127.0.0.1", logger);
-	tcp = std::unique_ptr<wpi::TCPAcceptor>(new wpi::TCPAcceptor(5800, "", logger));
-    tcp->start();
-	tcp->accept();
-	printf("The networking system has been initialized.\n");
-
+    net_thread = std::thread(acceptNewClients);
 }
 
 void deinitialize() {
+	net_thread.join();
     tcp->shutdown();
-	tcp.release();
+    delete tcp;
 }
 
 void update() {
-	// FIXME: Loops through all clients and then loops through all buffers even though only 1 loop is required.
-    acceptNewClient();
+    isUpdating = true;
 
-	for(int i = 0; i < buffers.size(); i++) {
-		memset(buffers[i], 0, MAX_BUFFER_LENGTH);
-		size_t len = clients[i]->receive((char*)buffers[i], MAX_BUFFER_LENGTH, &lastError, 0);
- 	}
+    for (int i = 0; i < buffers.size(); i++) {
+        memset(buffers[i], 0, MAX_BUFFER_LENGTH);
+        size_t len = clients[i]->receive((char*)buffers[i], MAX_BUFFER_LENGTH, &lastError, 0);
+    }
+
+    isUpdating = false;
 }
 
 int size() {
-	return clients.size();
+    return clients.size();
 }
 
 NetworkStream::Error GetLastError() {
-	return lastError;
+    return lastError;
 }
 
 void* read(const char* ip) {
     for (std::size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->getPeerIP().data() == ip) {
-			return buffers[i];
+            return buffers[i];
         }
     }
 
-	return nullptr;
+    return nullptr;
 }
 
 int write(const char* ip, char* data, int length) {
@@ -90,7 +90,7 @@ int write(const char* ip, char* data, int length) {
         }
     }
 
-	return -1;
+    return -1;
 }
 
 int write(int index, char* data, int length) {
@@ -104,15 +104,15 @@ void close(const char* ip) {
             clients[i].release();
             clients.erase(clients.begin() + i);
 
-			free(buffers[i]);
-			buffers.erase(buffers.begin() + i);
+            free(buffers[i]);
+            buffers.erase(buffers.begin() + i);
 
-			// TODO: Log that the client was closed.
+            // TODO: Log that the client was closed.
             return;
         }
     }
 
-	// TODO: Log that no client was closed.
+    // TODO: Log that no client was closed.
 }
 
 void closeAll() {
@@ -120,50 +120,67 @@ void closeAll() {
         clients[i]->close();
         clients[i].release();
 
-		free(buffers[i]);
+        free(buffers[i]);
     }
 
-	clients.clear();
-	buffers.clear();
+    clients.clear();
+    buffers.clear();
 
-	// TODO: Log that all clients have been closed.
+    // TODO: Log that all clients have been closed.
 }
 
-void acceptNewClient() {
-    tcp->accept();
-    // unique_ptr<NetworkStream> client = tcp->accept();
+void acceptNewClients() {
+	printf("Initializing networking system...\n");
+    // tcp = new TCPAcceptor(robot_port, robot_ip, logger);
+    // tcp = new TCPAcceptor(5800, "127.0.0.1", logger);
+    tcp = new wpi::TCPAcceptor(6666, "127.0.0.1", logger);
+    if (tcp->start() != 0) {
+        printf("failed to initialize networking system.\n");
+        return;
+    }
+    // tcp->accept();
+	isNetworkActive = true;
+	// net_thread = std::thread(acceptNewClients);
+    printf("The networking system has been initialized.\n");
 
-	unique_ptr<NetworkStream> client;
+    while (isNetworkActive == true) {
+        auto c = tcp->accept();
+        // unique_ptr<NetworkStream> client = tcp->accept();
 
-    if (client != nullptr) {
-        bool isInClientList = false;
+        unique_ptr<NetworkStream> client;
 
-        for (std::size_t i = 0; i < clients.size(); i++) {
-            if (clients[i]->getPeerIP().data() == client->getPeerIP().data()) {
-                isInClientList = true;
-                if (shouldRepalceDuplicateIps == true) {
-                    clients[i]->close();
+        if (client != nullptr) {
+			while(isUpdating == true);
 
-                    clients.erase(clients.begin() + i);
-					free(buffers[i]);
-					buffers.erase(buffers.begin() + i);
+            bool isInClientList = false;
 
-                    clients.push_back(std::move(client));
-                    buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
-					// TODO: Validate size by making sure clients.size() == buffers.size();
+            for (std::size_t i = 0; i < clients.size(); i++) {
+                if (clients[i]->getPeerIP().data() == client->getPeerIP().data()) {
+                    isInClientList = true;
+                    if (shouldRepalceDuplicateIps == true) {
+                        clients[i]->close();
 
-					// TODO: Log that client has been replaced.
-                    break;
+                        clients.erase(clients.begin() + i);
+                        free(buffers[i]);
+                        buffers.erase(buffers.begin() + i);
+
+                        clients.push_back(std::move(client));
+                        buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
+                        // TODO: Validate size by making sure clients.size() == buffers.size();
+
+                        // TODO: Log that client has been replaced.
+                        break;
+                    }
                 }
             }
-        }
 
-        if (isInClientList == false) {
-            clients.push_back(std::move(client));
-			buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
-			// TODO: Validate size by making sure clients.size() == buffers.size();
+            if (isInClientList == false) {
+                clients.push_back(std::move(client));
+                buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
+                // TODO: Validate size by making sure clients.size() == buffers.size();
 
-			// TODO: Log that client has been added.
+                // TODO: Log that client has been added.
+            }
         }
     }
 }
@@ -176,4 +193,4 @@ int getRobotPort() {
     return robot_port;
 }
 
-}  // namespace Networking
+}  // namespace net
