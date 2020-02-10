@@ -1,0 +1,20 @@
+hardware {
+	motor_right1 {
+		type: "spark",
+		pin: 1
+	},
+	motor_right2 {
+		type: "spark",
+		pin: 2
+	},
+	motor_left1 {
+		type: "spark",
+		pin: 3,
+		reversed: true
+	},
+	motor_left2 {
+		type: "spark",
+		pin: 4,
+		reversed: true
+	}
+}

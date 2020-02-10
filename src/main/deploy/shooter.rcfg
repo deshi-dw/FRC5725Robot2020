@@ -1,0 +1,10 @@
+hardware {
+	motor_top {
+		type: "spark",
+		pin: 5
+	},
+	motor_bottom {
+		type: "spark",
+		pin: 6
+	}
+}
