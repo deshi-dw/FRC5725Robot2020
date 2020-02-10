@@ -3,31 +3,29 @@
 #include <map>
 #include <string>
 
-using namespace std;
-
 namespace cfg {
 namespace {
-map<const string, void*> settings;
-const string sep = "::";
+std::map<const std::string, void*> settings;
+const std::string sep = "::";
 }  // namespace
 
-int parse(const string& data, const string& parent, int start, int end);
-void* parseValue(const string& svalue);
+int parse(const std::string& data, const std::string& parent, int start, int end);
+void* parseValue(const std::string& svalue);
 bool isDelimiter(const char& c);
-int getEndBracket(const string& data, int start);
-int getObjectCount(const string& data, int start);
-string getName(const string& data, int start);
-string getValue(const string& data, int start);
+int getEndBracket(const std::string& data, int start);
+int getObjectCount(const std::string& data, int start);
+std::string getName(const std::string& data, int start);
+std::string getValue(const std::string& data, int start);
 
-template<typename T> const bool get (string setting, T& value);
-template<> const bool get<int> (string setting, int& value);
-template<> const bool get<double> (string setting, double& value);
-template<> const bool get<bool> (string setting, bool& value);
-template<> const bool get<string> (string setting, string& value);
+template<typename T> const bool get (std::string setting, T& value);
+template<> const bool get<int> (std::string setting, int& value);
+template<> const bool get<double> (std::string setting, double& value);
+template<> const bool get<bool> (std::string setting, bool& value);
+template<> const bool get<std::string> (std::string setting, std::string& value);
 
-template <typename T> const int getArray(string setting, T* value);
+template <typename T> const int getArray(std::string setting, T* value);
 
-void load(const string path);
+void load(const std::string path);
 
 void unloadAll();
 }  // namespace Settings

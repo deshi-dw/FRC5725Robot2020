@@ -4,11 +4,9 @@
 
 #include <vector>
 
-using namespace std;
-
 namespace components {
 	namespace {
-		vector<Component*> components;
+		std::vector<Component*> components;
 	}
 
 	void add(Component* component) {

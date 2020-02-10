@@ -2,8 +2,6 @@
 
 #include <frc/PWM.h>
 
-using namespace std;
-
 namespace hardware {
 	bool addPWM(frc::PWM* pwm) {
 		// TODO: Print that a pwm was added.

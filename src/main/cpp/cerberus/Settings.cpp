@@ -5,19 +5,17 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 namespace cfg {
-void load(const string path) {
-    string data = files::readFile(path);
-    parse(data, string(), 0, data.size());
+void load(const std::string path) {
+    std::string data = files::readFile(path);
+    parse(data, std::string(), 0, data.size());
 }
 
 void unloadAll() {
 }
 
 template <typename T>
-const bool get(string setting, T& value) {
+const bool get(std::string setting, T& value) {
     if (settings[setting] != nullptr) {
         value = *(T*)settings[setting];
         return true;
@@ -27,7 +25,7 @@ const bool get(string setting, T& value) {
 }
 
 template <>
-const bool get<bool>(string setting, bool& value) {
+const bool get<bool>(std::string setting, bool& value) {
     if (settings[setting] != nullptr) {
         value = *(bool*)settings[setting];
         return true;
@@ -37,7 +35,7 @@ const bool get<bool>(string setting, bool& value) {
 }
 
 template <>
-const bool get<int>(string setting, int& value) {
+const bool get<int>(std::string setting, int& value) {
     if (settings[setting] != nullptr) {
         value = *(int*)settings[setting];
         return true;
@@ -47,7 +45,7 @@ const bool get<int>(string setting, int& value) {
 }
 
 template <>
-const bool get<double>(string setting, double& value) {
+const bool get<double>(std::string setting, double& value) {
     if (settings[setting] != nullptr) {
         value = *(double*)settings[setting];
         return true;
@@ -57,9 +55,9 @@ const bool get<double>(string setting, double& value) {
 }
 
 template <>
-const bool get<string>(string setting, string& value) {
+const bool get<std::string>(std::string setting, std::string& value) {
     if (settings[setting] != nullptr) {
-        value = *(string*)settings[setting];
+        value = *(std::string*)settings[setting];
         return true;
     }
 
@@ -67,23 +65,23 @@ const bool get<string>(string setting, string& value) {
 }
 
 template <typename T>
-const int getArray(string setting, T* value) {
+const int getArray(std::string setting, T* value) {
 	value = *(T*)settings[setting]+1;
     return *(int*)settings[setting]+0;
 }
 
-int parse(const string& data, const string& parent, int start, int end) {
+int parse(const std::string& data, const std::string& parent, int start, int end) {
     for (int i = start; i < end; i++) {
         if (data[i] == '{') {
-            string name = getName(data, i - 1);
+            std::string name = getName(data, i - 1);
             if (parent.empty() == true) {
                 i = parse(data, name, i + 1, getEndBracket(data, i + 1));
             } else {
                 i = parse(data, parent + sep + name, i + 1, getEndBracket(data, i + 1));
             }
         } else if (data[i] == ':') {
-            string name = getName(data, i - 1);
-            string svalue = getValue(data, i + 1);
+            std::string name = getName(data, i - 1);
+            std::string svalue = getValue(data, i + 1);
 
             if (parent.empty() == false) {
                 name = parent + sep + name;
@@ -98,12 +96,12 @@ int parse(const string& data, const string& parent, int start, int end) {
     return end + 1;
 }
 
-void* parseValue(const string& svalue) {
+void* parseValue(const std::string& svalue) {
     void* value = nullptr;
 
     // cout << name << " = ";
     if (svalue[0] == '"') {
-        value = new string(svalue.substr(1, svalue.size() - 2));
+        value = new std::string(svalue.substr(1, svalue.size() - 2));
     } else if (svalue[0] == '[') {
         // cout << "array";
         int start = 1;
@@ -149,7 +147,7 @@ bool isDelimiter(const char& c) {
     return c == ',' || c == ':' || c == '{' || c == '}';
 }
 
-int getEndBracket(const string& data, int start) {
+int getEndBracket(const std::string& data, int start) {
     int depth = 1;
 
     for (size_t i = start; i < data.size(); i++) {
@@ -167,7 +165,7 @@ int getEndBracket(const string& data, int start) {
     return start;
 }
 
-int getObjectCount(const string& data, int start) {
+int getObjectCount(const std::string& data, int start) {
     int depth = 0;
     int objectCount = 1;
 
@@ -189,38 +187,38 @@ int getObjectCount(const string& data, int start) {
     return start;
 }
 
-string getName(const string& data, int start) {
+std::string getName(const std::string& data, int start) {
     for (int i = start; i >= 0; i--) {
         if (isDelimiter(data[i]) == true) {
             if (i == start) {
-                return string();
+                return std::string();
             } else {
                 return data.substr(i + 1, start - i);
             }
         } else if (i == 0) {
             if (i == start) {
-                return string();
+                return std::string();
             } else {
                 return data.substr(i, start - i + 1);
             }
         }
     }
 
-    return string();
+    return std::string();
 }
 
-string getValue(const string& data, int start) {
-    bool isString = false;
+std::string getValue(const std::string& data, int start) {
+    bool isstring = false;
     int arrayLevel = 0;
     for (size_t i = start; i < data.size(); i++) {
-        if (isDelimiter(data[i]) == true && isString == false && arrayLevel == 0) {
+        if (isDelimiter(data[i]) == true && isstring == false && arrayLevel == 0) {
             if (i == start) {
-                return string();
+                return std::string();
             } else {
                 return data.substr(start, i - start);
             }
         } else if (data[i] == '"') {
-            isString = !isString;
+            isstring = !isstring;
         } else if (data[i] == '[') {
             arrayLevel++;
         } else if (data[i] == ']') {
@@ -228,6 +226,6 @@ string getValue(const string& data, int start) {
         }
     }
 
-    return string();
+    return std::string();
 }
 }  // namespace cfg

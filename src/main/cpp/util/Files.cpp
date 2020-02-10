@@ -6,11 +6,9 @@
 #include <sstream>
 #include <string>
 
-using namespace std;
-
 namespace files {
 
-bool createFile(const string& path) {
+bool createFile(const std::string& path) {
     // Open a file with the specified path under write mode.
     // This will create a file if non are present under that name.
     FILE* file = fopen(path.c_str(), "w");
@@ -26,7 +24,7 @@ bool createFile(const string& path) {
     }
 }
 
-bool deleteFile(const string& path) {
+bool deleteFile(const std::string& path) {
     if (remove(path.c_str()) == 0) {
         // If the file is removed, return true.
         // TODO: Log deletion of file.
@@ -38,10 +36,10 @@ bool deleteFile(const string& path) {
     }
 }
 
-string readFile(const string& path) {
+std::string readFile(const std::string& path) {
     // Open the file specifed under read mode.
     FILE* file = fopen(path.c_str(), "r");
-    string sbuffer;
+    std::string sbuffer;
 
     // Get the size of the file by seeking the end of file and storing it in size.
     fseek(file, 0L, SEEK_END);
@@ -58,7 +56,7 @@ string readFile(const string& path) {
 
     if (fread(buffer, 1, size, file) != 0) {
         // If the file was successfully read, create a string object from the char buffer.
-        sbuffer = string(buffer);
+        sbuffer = std::string(buffer);
 
         // Clean up the char buffer from memory and close the file.
         free(buffer);
@@ -72,7 +70,7 @@ string readFile(const string& path) {
     }
 }
 
-bool fileExists(const string& path) {
+bool fileExists(const std::string& path) {
     // Open the file specifed under read mode.
     FILE* file = fopen(path.c_str(), "r");
 

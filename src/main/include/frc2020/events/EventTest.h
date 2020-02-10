@@ -12,6 +12,7 @@ class EventTest : public events::Event {
 	EventTest() {}
 
 	bool condition(){
+		#ifdef OLD_NETWORK_CODE_STUFF
 		if(net::buffers.size() > 0 && net::buffers[0] != nullptr) {
 			uint16_t msgid;
 			memcpy(&msgid, net::buffers[0], 2);
@@ -20,6 +21,7 @@ class EventTest : public events::Event {
 			// FIXME: Define msgid elsewhere.
 			return msgid == 345;
 		}
+		#endif
 
 		return false;
 	}
@@ -27,6 +29,7 @@ class EventTest : public events::Event {
 	void initialize() {
 		// FIXME: Find a better method for reading from a byte buffer.
 		// Get the message length.
+		#ifdef OLD_NETWORK_CODE_STUFF
 		uint8_t msglen;
 		memcpy(&msglen, (void*)(net::buffers[0]+2), 1);
 
@@ -47,9 +50,10 @@ class EventTest : public events::Event {
 		// Free the allocated memory.
 		// free(&msglen);
 		free(msg);
+
+		#endif
 	}
 	void deinitialize() { }
 	
 	void update() { }
 };
-

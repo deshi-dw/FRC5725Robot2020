@@ -5,18 +5,16 @@
 #include <sstream>
 #include <string>
 
-using namespace std;
-
 namespace files {
 	// TODO: Write FileExists description.
-	bool fileExists (const string& path);
+	bool fileExists (const std::string& path);
 
 	// TODO: Write ReadFile description.
-	string readFile(const string& path);
+	std::string readFile(const std::string& path);
 
 	// TODO: Write DeleteFile description.
-	bool deleteFile(const string& path);
+	bool deleteFile(const std::string& path);
 
 	// TODO: Write CreateFile description.
-	bool createFile(const string& path);
+	bool createFile(const std::string& path);
 }

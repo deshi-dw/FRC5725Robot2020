@@ -16,8 +16,6 @@
 
 #include <frc/AnalogInput.h>
 
-using namespace std;
-
 #ifndef PWM_COUNT
 #define PWM_COUNT 9
 #endif
@@ -32,10 +30,10 @@ using namespace std;
 
 namespace hardware {
 namespace {
-vector<frc::PWM*> ptr_pwms = vector<frc::PWM*>(PWM_COUNT);
-vector<frc::DigitalInput*> ptr_di = vector<frc::DigitalInput*>(DIO_COUNT);
-vector<frc::DigitalOutput*> ptr_do = vector<frc::DigitalOutput*>(DIO_COUNT);
-vector<frc::AnalogInput*> ptr_ai = vector<frc::AnalogInput*>(AIO_COUNT);
+std::vector<frc::PWM*> ptr_pwms = std::vector<frc::PWM*>(PWM_COUNT);
+std::vector<frc::DigitalInput*> ptr_di = std::vector<frc::DigitalInput*>(DIO_COUNT);
+std::vector<frc::DigitalOutput*> ptr_do = std::vector<frc::DigitalOutput*>(DIO_COUNT);
+std::vector<frc::AnalogInput*> ptr_ai = std::vector<frc::AnalogInput*>(AIO_COUNT);
 }
 
 bool addPWM(frc::PWM* pwm);

@@ -36,8 +36,6 @@
 #include <sstream>
 #include <string>
 
-using namespace frc2020;
-
 frc::Joystick joystick = frc::Joystick(0);
 EventTest eventTest = EventTest();
 

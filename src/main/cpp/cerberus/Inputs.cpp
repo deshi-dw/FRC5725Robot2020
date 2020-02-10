@@ -2,8 +2,6 @@
 #include <frc/Joystick.h>
 #include <cerberus/Inputs.h>
 
-using namespace std;
-
 #ifndef USE_WPILIB_INPUT
 #define USE_WPILIB_INPUT 1
 #endif

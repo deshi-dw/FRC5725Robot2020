@@ -3,8 +3,6 @@
 #include <vector>
 #include <frc/Joystick.h>
 
-using namespace std;
-
 #ifndef USE_WPILIB_INPUT
 #define USE_WPILIB_INPUT 1
 #endif
@@ -51,8 +49,8 @@ namespace input {
 		frc::Joystick joystick = frc::Joystick(0);
 		#endif
 
-		vector<Analog*> analogs;
-		vector<Digital*> digitals;
+		std::vector<Analog*> analogs;
+		std::vector<Digital*> digitals;
 	}
 
 	void initialize();
