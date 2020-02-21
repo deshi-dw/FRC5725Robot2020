@@ -1,5 +1,6 @@
 #include <cerberus/Hardware.h>
 #include <cerberus/Settings.h>
+#include <frc2020/Robot.h>
 #include <frc2020/components/Shooter.h>
 #include <rev/CANEncoder.h>
 #include <rev/CANSparkMax.h>
@@ -34,6 +35,10 @@ void Shooter::deinitialize() {
 }
 
 void Shooter::update() {}
+
+bool Shooter::condition() {
+    return robotState != RobotState::SHUTTING_DOWN;
+}
 
 void Shooter::shoot(const double& top, const double& bottom) {
     motor_top->Set(top);

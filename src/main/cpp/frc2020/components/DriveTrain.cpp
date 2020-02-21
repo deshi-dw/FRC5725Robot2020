@@ -1,8 +1,11 @@
 #include <cerberus/Hardware.h>
 #include <cerberus/Settings.h>
 #include <frc/Spark.h>
+#include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
 #include <stdio.h>
+
+#include <iostream>
 
 namespace frc2020 {
 DriveTrain::DriveTrain() {}
@@ -50,5 +53,9 @@ void DriveTrain::driveTank(const double& right, const double& left) {
 }
 
 void DriveTrain::update() {}
+
+bool DriveTrain::condition() {
+    return robotState != SHUTTING_DOWN;
+}
 
 }  // namespace frc2020

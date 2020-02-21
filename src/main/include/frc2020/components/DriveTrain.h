@@ -1,13 +1,13 @@
 #pragma once
 
-#include <cerberus/Component.h>
+#include <cerberus/Event.h>
 #include <frc/Spark.h>
 
 #include <string>
 
 namespace frc2020 {
 
-class DriveTrain : public Component {
+class DriveTrain : public events::Event {
    private:
     const std::string settingsPath = "conf/drivetrain.rcfg";
 
@@ -28,6 +28,7 @@ class DriveTrain : public Component {
     void initialize();
     void deinitialize();
     void update();
+    bool condition();
 
     void driveArcade(const double& speed, const double& turn);
     void driveTank(const double& right, const double& left);
