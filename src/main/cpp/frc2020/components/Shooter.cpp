@@ -17,8 +17,8 @@ void Shooter::initialize() {
     cfg::get<int>("hardware::motor_right1::pin", pin_top);
     cfg::get<int>("hardware::motor_right2::pin", pin_bottom);
 
-	pin_top = 0;
-	pin_bottom = 1;
+	pin_top = 5;
+	pin_bottom = 6;
 
     motor_top = new rev::CANSparkMax(pin_top, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
     motor_bottom = new rev::CANSparkMax(pin_bottom, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
@@ -27,6 +27,7 @@ void Shooter::initialize() {
 	encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
 
 	m_isInitialized = true;
+    std::cout << "Shooter initialized." << std::endl;
 }
 
 void Shooter::deinitialize() {
@@ -41,7 +42,5 @@ void Shooter::update() {}
 void Shooter::shoot(const double& top, const double& bottom) {
     motor_top->Set(top);
     motor_bottom->Set(bottom);
-
-    std::cout << "shooter r:" << bottom << " l:" << top << std::endl;
 }
 }  // namespace frc2020
