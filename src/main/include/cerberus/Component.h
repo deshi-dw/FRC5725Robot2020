@@ -1,14 +1,5 @@
 #pragma once
 
-enum State {
-    DISABLED,
-    TESTING,
-    AUTONOMOUS,
-    TELEOP
-};
-
-static State c_robotState;
-
 class Component {
    public:
     virtual void update() = 0;
