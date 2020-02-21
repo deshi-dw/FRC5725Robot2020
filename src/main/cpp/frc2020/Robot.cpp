@@ -5,7 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <cerberus/Components.h>
 #include <cerberus/Events.h>
 #include <cerberus/Hardware.h>
 #include <cerberus/Inputs.h>
@@ -21,6 +20,7 @@
 #include <frc2020/events/EventLogMotion.h>
 #include <frc2020/events/EventTest.h>
 
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -33,25 +33,23 @@ frc2020::Intake intake;
 
 // wpi::TCPStream tcp = wpi::TCPStream(socket(PF_INET, SOCK_STREAM, 0), );
 
-// frc2020::HumanDriveController driveController = frc2020::HumanDriveController(drivetrain);
-frc2020::HumanShooterController shooterController = frc2020::HumanShooterController(shooter);
-frc2020::HumanIntakeController intakeController = frc2020::HumanIntakeController(intake);
+frc2020::HumanDriveController driveController;
+frc2020::HumanShooterController shooterController;
+frc2020::HumanIntakeController intakeController;
 
 void Robot::RobotInit() {
     std::cout << "test" << std::endl;
     // net::initialize();
     events::add(&eventTest);
+
+    events::add(&drivetrain);
+    events::add(&shooter);
+    events::add(&intake);
+
+    events::add(&driveController);
+    events::add(&shooterController);
+    events::add(&intakeController);
     std::cout << "Events added." << std::endl;
-
-    components::add(&drivetrain);
-    components::add(&shooter);
-    components::add(&intake);
-
-    // components::add(&driveController);
-    components::add(&shooterController);
-    components::add(&intakeController);
-    components::initialize();
-    std::cout << "Components added." << std::endl;
 
     std::cout << std::endl
               << "List of Event Ids:" << std::endl;
@@ -65,6 +63,8 @@ void Robot::RobotInit() {
     } else {
         std::cout << "EventTest is a part of events." << std::endl;
     }
+
+    events::update();
 }
 
 void Robot::RobotPeriodic() {
@@ -94,7 +94,6 @@ void Robot::TestInit() {
 }
 void Robot::TestPeriodic() {
     // net::update();
-    components::update();
     input::update();
     events::update();
 }

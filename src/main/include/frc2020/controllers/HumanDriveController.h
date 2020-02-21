@@ -1,25 +1,27 @@
 #pragma once
 
-#include <util/RobotState.h>
-#include <cerberus/Component.h>
+#include <cerberus/Event.h>
+#include <cerberus/Events.h>
 #include <cerberus/Inputs.h>
+#include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
-
-#include<stdio.h>
+#include <stdio.h>
 
 namespace frc2020 {
-class HumanDriveController : public Component {
-    private:
+class HumanDriveController : public events::Event {
+   private:
     // FIXME: speed and turn axis are flipped in the drivetrain view.
     input::Analog drive_speed = input::Analog(0);
     input::Analog drive_turn = input::Analog(1);
 
-	frc2020::DriveTrain& drivetrain;
+    frc2020::DriveTrain* drivetrain;
 
-    public:
-	HumanDriveController(frc2020::DriveTrain& drivetrain) : drivetrain(drivetrain) {}
+   public:
+    HumanDriveController() {}
 
     void initialize() {
+        drivetrain = (DriveTrain*)events::get(typeid(DriveTrain));
+
         // drive_speed.isDeadZoned = true;
         drive_speed.deadZone = 0.15;
 
@@ -29,7 +31,6 @@ class HumanDriveController : public Component {
         input::add<input::Analog>(&drive_speed);
         input::add<input::Analog>(&drive_turn);
 
-        m_isInitialized = true;
         std::cout << "HumanDriveController initialized." << std::endl;
     }
     void deinitialize() {
@@ -38,11 +39,11 @@ class HumanDriveController : public Component {
     }
 
     void update() {
-        drivetrain.driveArcade(drive_speed.value * 0.4, drive_turn.value * 0.4);
+        drivetrain->driveArcade(drive_speed.value * 0.4, drive_turn.value * 0.4);
     }
 
-	bool updateCondition() {
-		return c_robotState == RobotState::TELEOP || c_robotState == RobotState::TESTING;
-	}
+    bool condition() {
+        return robotState == RobotState::TELEOP || robotState == RobotState::TESTING;
+    }
 };
-}
+}  // namespace frc2020

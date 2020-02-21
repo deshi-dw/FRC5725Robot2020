@@ -31,7 +31,9 @@ enum RobotState {
     DISABLED,
     TESTING,
     AUTONOMOUS,
-    TELEOP
+    TELEOP,
+    SHUTTING_DOWN,
+    BOOTING_UP
 };
 
 static RobotState robotState;
