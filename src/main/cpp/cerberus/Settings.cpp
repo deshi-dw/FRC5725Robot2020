@@ -1,7 +1,7 @@
 #include <cerberus/Settings.h>
+#include <string.h>
 #include <util/Files.h>
 
-#include <string.h>
 #include <string>
 #include <vector>
 
@@ -66,8 +66,8 @@ const bool get<std::string>(std::string setting, std::string& value) {
 
 template <typename T>
 const int getArray(std::string setting, T* value) {
-	value = *(T*)settings[setting]+1;
-    return *(int*)settings[setting]+0;
+    value = *(T*)settings[setting] + 1;
+    return *(int*)settings[setting] + 0;
 }
 
 int parse(const std::string& data, const std::string& parent, int start, int end) {
@@ -109,15 +109,15 @@ void* parseValue(const std::string& svalue) {
         int objectCount = getObjectCount(svalue, start);
 
         value = malloc((objectCount + 1) * sizeof(void*));
-		memset(value, objectCount, 1);
-		int count = 1;
+        memset(value, objectCount, 1);
+        int count = 1;
 
         for (size_t i = start; i < svalue.size(); i++) {
             if (svalue[i] == ',' || svalue[i] == ']') {
                 // (*(vector<void*>*)value).push_back(parseValue(svalue.substr(start, i - start)));
-				((void**)value)[count] = (void*) parseValue(svalue.substr(start, i - start));
+                ((void**)value)[count] = (void*)parseValue(svalue.substr(start, i - start));
                 start = i + 1;
-				count++;
+                count++;
             }
         }
     } else if (svalue[0] == 't') {
@@ -173,9 +173,9 @@ int getObjectCount(const std::string& data, int start) {
         if (data[i] == ']') {
             depth--;
 
-			if(depth == -1) {
-				return objectCount;
-			}
+            if (depth == -1) {
+                return objectCount;
+            }
 
         } else if (data[i] == '[') {
             depth++;

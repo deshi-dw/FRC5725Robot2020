@@ -1,19 +1,19 @@
-#include <cerberus/Events.h>
 #include <cerberus/Event.h>
+#include <cerberus/Events.h>
 
 namespace events {
 const int add(Event* event) {
     if (isUpdating == false) {
-		// If the events aren't being updated, add the event to the event list.
+        // If the events aren't being updated, add the event to the event list.
         m_events.push_back(event);
         // TODO: Check that returning events.size() is corrent here. It might be events.size() - 1 instead.
-		// Return the index of the event added.
+        // Return the index of the event added.
         return m_events.size();
     } else {
         afterUpdate.push_back([&event]() -> void { add(event); });
-		// TODO: Check that returning events.size() + 1 is corrent here. It might be events.size() instead.
-		// Return the *future* index of the event added.
-		return m_events.size() + 1;
+        // TODO: Check that returning events.size() + 1 is corrent here. It might be events.size() instead.
+        // Return the *future* index of the event added.
+        return m_events.size() + 1;
     }
 }
 
@@ -29,17 +29,17 @@ void remove(int id) {
 }
 
 const Event* get(int id) {
-	return m_events[id];
+    return m_events[id];
 }
 
 const Event* get(const std::type_info& type) {
-	for(std::size_t i = 0; i < m_events.size(); i++) {
-		if(type == typeid(m_events[i])) {
-			return m_events[i];
-		}
-	}
+    for (std::size_t i = 0; i < m_events.size(); i++) {
+        if (type == typeid(m_events[i])) {
+            return m_events[i];
+        }
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 void clear() {
@@ -56,7 +56,7 @@ void update() {
     // Loop through each stored event.
     isUpdating = true;
     for (int i = 0; i < m_events.size(); i++) {
-		// FIXME: Add check to make sure events[i] isn't a nullptr.
+        // FIXME: Add check to make sure events[i] isn't a nullptr.
         if (m_events[i]->isEnabled == true && m_events[i]->condition() == true) {
             // If the event condition is true and the event is enabled,
             if (m_events[i]->hasFiredOnce == true) {
@@ -70,18 +70,18 @@ void update() {
         } else if (m_events[i]->hasFiredOnce == true) {
             // If the event's condition is false and it has fired before, set has fired to false.
             m_events[i]->hasFiredOnce = false;
-			m_events[i]->deinitialize();
+            m_events[i]->deinitialize();
         }
     }
     isUpdating = false;
 
     // Do the tasks that were assigned to be completed after update and then clear them.
     for (std::function<void()> func : afterUpdate) {
-		if(func) {
-       		func();
-		}
+        if (func) {
+            func();
+        }
     }
     afterUpdate.clear();
 }
 
-}  // namespace Events
+}  // namespace events

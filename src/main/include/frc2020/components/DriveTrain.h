@@ -1,7 +1,7 @@
 #pragma once
 
-#include <frc/Spark.h>
 #include <cerberus/Component.h>
+#include <frc/Spark.h>
 
 #include <string>
 
@@ -16,15 +16,15 @@ class DriveTrain : public Component {
     int pin_left1;
     int pin_left2;
 
-	frc::Spark* motor_right1;
-	// frc::Spark* motor_right2;
-	frc::Spark* motor_left1;
-	frc::Spark* motor_left2;
+    frc::Spark* motor_right1;
+    // frc::Spark* motor_right2;
+    frc::Spark* motor_left1;
+    frc::Spark* motor_left2;
 
    public:
     DriveTrain();
     ~DriveTrain();
-    
+
     void initialize();
     void deinitialize();
     void update();

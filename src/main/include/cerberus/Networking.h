@@ -49,7 +49,7 @@ void initialize() {
 }
 
 void deinitialize() {
-	net_thread.join();
+    net_thread.join();
     tcp->shutdown();
     delete tcp;
 }
@@ -130,7 +130,7 @@ void closeAll() {
 }
 
 void acceptNewClients() {
-	printf("Initializing networking system...\n");
+    printf("Initializing networking system...\n");
     // tcp = new TCPAcceptor(robot_port, robot_ip, logger);
     // tcp = new TCPAcceptor(5800, "127.0.0.1", logger);
     tcp = new wpi::TCPAcceptor(6666, "127.0.0.1", logger);
@@ -139,8 +139,8 @@ void acceptNewClients() {
         return;
     }
     // tcp->accept();
-	isNetworkActive = true;
-	// net_thread = std::thread(acceptNewClients);
+    isNetworkActive = true;
+    // net_thread = std::thread(acceptNewClients);
     printf("The networking system has been initialized.\n");
 
     while (isNetworkActive == true) {
@@ -150,7 +150,8 @@ void acceptNewClients() {
         unique_ptr<NetworkStream> client;
 
         if (client != nullptr) {
-			while(isUpdating == true);
+            while (isUpdating == true)
+                ;
 
             bool isInClientList = false;
 

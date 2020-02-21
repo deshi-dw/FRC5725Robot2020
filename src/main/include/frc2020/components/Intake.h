@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cerberus/Component.h>
-
 #include <frc/Spark.h>
 
 #include <string>
@@ -11,7 +10,7 @@ namespace frc2020 {
 class Intake : public Component {
    private:
     const std::string settingsPath = "conf/intake.rcfg";
-	frc::Spark* motor;
+    frc::Spark* motor;
 
     bool m_isOn;
 
@@ -21,7 +20,7 @@ class Intake : public Component {
 
     Intake();
     ~Intake();
-    
+
     void initialize();
     void deinitialize();
     void update();

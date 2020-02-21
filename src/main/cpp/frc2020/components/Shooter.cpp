@@ -1,9 +1,8 @@
 #include <cerberus/Hardware.h>
 #include <cerberus/Settings.h>
 #include <frc2020/components/Shooter.h>
-
-#include <rev/CANSparkMax.h>
 #include <rev/CANEncoder.h>
+#include <rev/CANSparkMax.h>
 
 #include <string>
 
@@ -17,14 +16,14 @@ void Shooter::initialize() {
     cfg::get<int>("hardware::motor_right1::pin", pin_top);
     cfg::get<int>("hardware::motor_right2::pin", pin_bottom);
 
-	pin_top = 5;
-	pin_bottom = 6;
+    pin_top = 5;
+    pin_bottom = 6;
 
     motor_top = new rev::CANSparkMax(pin_top, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
     motor_bottom = new rev::CANSparkMax(pin_bottom, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
-	encoder_top = new rev::CANEncoder(*motor_top, rev::CANEncoder::EncoderType::kHallSensor, 0);
-	encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
+    encoder_top = new rev::CANEncoder(*motor_top, rev::CANEncoder::EncoderType::kHallSensor, 0);
+    encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
 
     std::cout << "Shooter initialized." << std::endl;
 }

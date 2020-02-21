@@ -1,9 +1,7 @@
-#include <frc2020/components/DriveTrain.h>
 #include <cerberus/Hardware.h>
 #include <cerberus/Settings.h>
-
 #include <frc/Spark.h>
-
+#include <frc2020/components/DriveTrain.h>
 #include <stdio.h>
 
 namespace frc2020 {
@@ -30,10 +28,10 @@ void DriveTrain::initialize() {
     motor_left2 = new frc::Spark(pin_left2);
 }
 void DriveTrain::deinitialize() {
-	delete motor_right1;
-	// delete motor_right2;
-	delete motor_left1;
-	delete motor_left2;
+    delete motor_right1;
+    // delete motor_right2;
+    delete motor_left1;
+    delete motor_left2;
 
     std::cout << "Drivetrain initialized." << std::endl;
 }

@@ -5,26 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <frc2020/Robot.h>
-
-#include <util/RobotState.h>
+#include <cerberus/Components.h>
 #include <cerberus/Events.h>
 #include <cerberus/Hardware.h>
 #include <cerberus/Inputs.h>
 #include <cerberus/Networking.h>
-#include <cerberus/Components.h>
-
+#include <frc/Joystick.h>
+#include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
-#include <frc2020/components/Shooter.h>
 #include <frc2020/components/Intake.h>
-
+#include <frc2020/components/Shooter.h>
 #include <frc2020/controllers/HumanDriveController.h>
-#include <frc2020/controllers/HumanShooterController.h>
 #include <frc2020/controllers/HumanIntakeController.h>
-
+#include <frc2020/controllers/HumanShooterController.h>
+#include <frc2020/events/EventLogMotion.h>
 #include <frc2020/events/EventTest.h>
 
-#include <frc/Joystick.h>
 #include <sstream>
 #include <string>
 
@@ -37,25 +33,38 @@ frc2020::Intake intake;
 
 // wpi::TCPStream tcp = wpi::TCPStream(socket(PF_INET, SOCK_STREAM, 0), );
 
-frc2020::HumanDriveController driveController = frc2020::HumanDriveController(drivetrain);
+// frc2020::HumanDriveController driveController = frc2020::HumanDriveController(drivetrain);
 frc2020::HumanShooterController shooterController = frc2020::HumanShooterController(shooter);
 frc2020::HumanIntakeController intakeController = frc2020::HumanIntakeController(intake);
 
 void Robot::RobotInit() {
-	std::cout << "test" << std::endl;
+    std::cout << "test" << std::endl;
     // net::initialize();
     events::add(&eventTest);
-	std::cout << "Events added." << std::endl;
+    std::cout << "Events added." << std::endl;
 
-	components::add(&drivetrain);
-	components::add(&shooter);
-	components::add(&intake);
+    components::add(&drivetrain);
+    components::add(&shooter);
+    components::add(&intake);
 
-	components::add(&driveController);
-	components::add(&shooterController);
-	components::add(&intakeController);
-	components::initialize();
-	std::cout << "Components added." << std::endl;
+    // components::add(&driveController);
+    components::add(&shooterController);
+    components::add(&intakeController);
+    components::initialize();
+    std::cout << "Components added." << std::endl;
+
+    std::cout << std::endl
+              << "List of Event Ids:" << std::endl;
+    std::cout << "EventTest id = " << typeid(EventTest).name() << std::endl;
+    std::cout << "EventLogMotion id = " << typeid(EventLogMotion).name() << std::endl;
+    std::cout << "HumanDriveController id = " << typeid(frc2020::HumanDriveController).name() << std::endl;
+    std::cout << std::endl;
+
+    if (events::get(typeid(EventTest)) == nullptr) {
+        std::cout << "EventTest is not in events." << std::endl;
+    } else {
+        std::cout << "EventTest is a part of events." << std::endl;
+    }
 }
 
 void Robot::RobotPeriodic() {
@@ -63,25 +72,25 @@ void Robot::RobotPeriodic() {
 }
 
 void Robot::DisabledInit() {
-	c_robotState = RobotState::DISABLED;
-	std::cout << "robot state: DISABLED" << std::endl;
-	// components::deinitialize();
+    robotState = RobotState::DISABLED;
+    std::cout << "robot state: DISABLED" << std::endl;
+    // components::deinitialize();
 }
 
 void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() {
-	c_robotState = RobotState::AUTONOMOUS;
+    robotState = RobotState::AUTONOMOUS;
 }
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-	c_robotState = RobotState::TELEOP;
+    robotState = RobotState::TELEOP;
 }
 void Robot::TeleopPeriodic() {}
 
 void Robot::TestInit() {
-	c_robotState = RobotState::TESTING;
+    robotState = RobotState::TESTING;
 }
 void Robot::TestPeriodic() {
     // net::update();

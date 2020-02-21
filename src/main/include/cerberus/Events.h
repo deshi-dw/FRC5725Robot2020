@@ -1,9 +1,9 @@
 #pragma once
 
+#include <cerberus/Event.h>
+
 #include <functional>
 #include <vector>
-
-#include <cerberus/Event.h>
 
 namespace events {
 namespace {
@@ -70,4 +70,4 @@ void clear();
  */
 void update();
 
-}  // namespace Events
+}  // namespace events
