@@ -23,6 +23,7 @@ namespace components {
 			std::cout << "initializing component " << i << std::endl;
 			if(m_components[i]->isInitialized() == false) {
 				m_components[i]->initialize();
+				m_components[i]->setInitialized(true);
 			}
 			std::cout << "is component initialized = " << m_components[i]->isInitialized() << std::endl;
 		}
@@ -32,6 +33,7 @@ namespace components {
 		for(std::size_t i = 0; i < m_components.size(); i++) {
 			if(m_components[i]->isInitialized() == true) {
 				m_components[i]->deinitialize();
+				m_components[i]->setInitialized(false);
 			}
 		}
 	}

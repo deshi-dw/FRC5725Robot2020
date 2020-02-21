@@ -26,15 +26,12 @@ void Shooter::initialize() {
 	encoder_top = new rev::CANEncoder(*motor_top, rev::CANEncoder::EncoderType::kHallSensor, 0);
 	encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
 
-	m_isInitialized = true;
     std::cout << "Shooter initialized." << std::endl;
 }
 
 void Shooter::deinitialize() {
     delete motor_top;
     delete motor_bottom;
-
-	m_isInitialized = false;
 }
 
 void Shooter::update() {}

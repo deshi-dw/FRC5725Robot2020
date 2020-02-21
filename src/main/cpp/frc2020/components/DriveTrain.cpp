@@ -28,8 +28,6 @@ void DriveTrain::initialize() {
     // motor_right2 = new frc::Spark(pin_right2);
     motor_left1 = new frc::Spark(pin_left1);
     motor_left2 = new frc::Spark(pin_left2);
-
-	m_isInitialized = true;
 }
 void DriveTrain::deinitialize() {
 	delete motor_right1;
@@ -37,7 +35,6 @@ void DriveTrain::deinitialize() {
 	delete motor_left1;
 	delete motor_left2;
 
-	m_isInitialized = false;
     std::cout << "Drivetrain initialized." << std::endl;
 }
 

@@ -29,25 +29,16 @@ class HumanDriveController : public Component {
         input::add<input::Analog>(&drive_speed);
         input::add<input::Analog>(&drive_turn);
 
-		// drivetrain.initialize();
-
         m_isInitialized = true;
         std::cout << "HumanDriveController initialized." << std::endl;
     }
     void deinitialize() {
         input::remove<input::Analog>(&drive_speed);
         input::remove<input::Analog>(&drive_turn);
-
-		// drivetrain.deinitialize();
-
-        m_isInitialized = false;
     }
 
     void update() {
         drivetrain.driveArcade(drive_speed.value * 0.4, drive_turn.value * 0.4);
-
-        // std::cout << "human drive speed:" << drive_speed.value << std::endl;
-        // std::cout << "human drive turn:" << drive_turn.value << std::endl;
     }
 
 	bool updateCondition() {

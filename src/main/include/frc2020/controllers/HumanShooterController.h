@@ -20,17 +20,12 @@ class HumanShooterController : public Component {
         input::add<input::Analog>(&speed_top);
         input::add<input::Analog>(&speed_bottom);
 
-		// shooter.initialize();
-
-        m_isInitialized = true;
         std::cout << "HumanShooterController initialized." << std::endl;
     }
 
     void deinitialize() {
         input::remove<input::Analog>(&speed_top);
         input::remove<input::Analog>(&speed_bottom);
-
-		// shooter.deinitialize();
 
         m_isInitialized = false;
     }

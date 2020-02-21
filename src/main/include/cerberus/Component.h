@@ -14,6 +14,10 @@ class Component {
         return m_isInitialized;
     }
 
+    void setInitialized(bool initialized) {
+        m_isInitialized = initialized;
+    }
+
    protected:
     bool m_isInitialized = false;
 };
