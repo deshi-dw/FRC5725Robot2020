@@ -1,6 +1,8 @@
 #include <cerberus/Event.h>
 #include <cerberus/Events.h>
 
+#include <typeinfo>
+
 namespace events {
 const int add(Event* event) {
     if (isUpdating == false) {
@@ -34,7 +36,7 @@ const Event* get(int id) {
 
 const Event* get(const std::type_info& type) {
     for (std::size_t i = 0; i < m_events.size(); i++) {
-        if (type == typeid(m_events[i])) {
+        if (type == typeid(*m_events[i])) {
             return m_events[i];
         }
     }
