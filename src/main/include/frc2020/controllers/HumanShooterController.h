@@ -1,5 +1,6 @@
 #pragma once
 
+#include <util/RobotState.h>
 #include <cerberus/Component.h>
 #include <cerberus/Inputs.h>
 #include <frc2020/components/Shooter.h>
@@ -19,22 +20,27 @@ class HumanShooterController : public Component {
         input::add<input::Analog>(&speed_top);
         input::add<input::Analog>(&speed_bottom);
 
-		shooter.initialize();
+		// shooter.initialize();
+
+        m_isInitialized = true;
+        std::cout << "HumanShooterController initialized." << std::endl;
     }
+
     void deinitialize() {
         input::remove<input::Analog>(&speed_top);
         input::remove<input::Analog>(&speed_bottom);
 
-		shooter.deinitialize();
+		// shooter.deinitialize();
+
+        m_isInitialized = false;
     }
 
     void update() {
-		shooter.update();
 		shooter.shoot(speed_top.value, speed_bottom.value);
     }
 
 	bool updateCondition() {
-		return c_robotState == State::TELEOP || State::TESTING;
+		return c_robotState == RobotState::TELEOP || c_robotState == RobotState::TESTING;
 	}
 };
 }
