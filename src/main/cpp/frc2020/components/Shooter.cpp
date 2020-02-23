@@ -1,4 +1,4 @@
-#include <cerberus/Hardware.h>
+#include <cerberus/Logger.h>
 #include <cerberus/Settings.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/Shooter.h>
@@ -7,7 +7,6 @@
 
 #include <string>
 
-namespace frc2020 {
 Shooter::Shooter() {}
 Shooter::~Shooter() {}
 
@@ -26,7 +25,7 @@ void Shooter::initialize() {
     encoder_top = new rev::CANEncoder(*motor_top, rev::CANEncoder::EncoderType::kHallSensor, 0);
     encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
 
-    std::cout << "Shooter initialized." << std::endl;
+    logger::println(logger::warning, "[Shooter] successfully initialized.");
 }
 
 void Shooter::deinitialize() {
@@ -44,4 +43,3 @@ void Shooter::shoot(const double& top, const double& bottom) {
     motor_top->Set(top);
     motor_bottom->Set(bottom);
 }
-}  // namespace frc2020

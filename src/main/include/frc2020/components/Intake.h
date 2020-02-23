@@ -5,8 +5,6 @@
 
 #include <string>
 
-namespace frc2020 {
-
 class Intake : public events::Event {
    private:
     const std::string settingsPath = "conf/intake.rcfg";
@@ -28,4 +26,3 @@ class Intake : public events::Event {
 
     void toggle(bool isOn);
 };
-}  // namespace frc2020

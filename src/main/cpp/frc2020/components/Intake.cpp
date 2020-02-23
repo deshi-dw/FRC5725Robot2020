@@ -1,12 +1,12 @@
 #pragma once
 
 #include <cerberus/Hardware.h>
+#include <cerberus/Logger.h>
 #include <cerberus/Settings.h>
 #include <frc/Spark.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/Intake.h>
 
-namespace frc2020 {
 Intake::Intake() {}
 Intake::~Intake() {}
 
@@ -18,6 +18,8 @@ void Intake::initialize() {
     speed = 1.0;
 
     motor = new frc::Spark(channel);
+
+    logger::println(logger::warning, "[Intake] successfully initialized.");
 }
 
 void Intake::deinitialize() {
@@ -38,5 +40,3 @@ bool Intake::condition() {
 void Intake::toggle(bool isOn) {
     m_isOn = isOn;
 }
-
-}  // namespace frc2020

@@ -1,44 +1,25 @@
 #pragma once
 
+class Intake;
+struct input::Digital;
+
 #include <cerberus/Event.h>
-#include <cerberus/Inputs.h>
-#include <frc2020/Robot.h>
-#include <frc2020/components/Intake.h>
 
-#include <iostream>
-
-namespace frc2020 {
 class HumanIntakeController : public events::Event {
    private:
+    // FIXME: put definition in constructor.
     input::Digital input_toggle = input::Digital(1);
 
-    frc2020::Intake* intake;
+    Intake* intake;
 
    public:
-    HumanIntakeController() {}
+    HumanIntakeController();
 
-    void initialize() {
-        intake = (Intake*)events::get(typeid(Intake));
+    void initialize();
 
-        input::add<input::Digital>(&input_toggle);
+    void deinitialize();
 
-        std::cout << "HumanIntakeController initialized." << std::endl;
-    }
+    void update();
 
-    void deinitialize() {
-        input::remove<input::Digital>(&input_toggle);
-    }
-
-    void update() {
-        if (input_toggle.value) {
-            intake->toggle(true);
-        } else {
-            intake->toggle(false);
-        }
-    }
-
-    bool condition() {
-        return robotState == RobotState::TELEOP || robotState == RobotState::TESTING;
-    }
+    bool condition();
 };
-}  // namespace frc2020

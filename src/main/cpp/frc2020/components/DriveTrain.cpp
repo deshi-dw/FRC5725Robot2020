@@ -1,4 +1,5 @@
 #include <cerberus/Hardware.h>
+#include <cerberus/Logger.h>
 #include <cerberus/Settings.h>
 #include <frc/Spark.h>
 #include <frc2020/Robot.h>
@@ -7,7 +8,6 @@
 
 #include <iostream>
 
-namespace frc2020 {
 DriveTrain::DriveTrain() {}
 
 DriveTrain::~DriveTrain() {}
@@ -36,7 +36,7 @@ void DriveTrain::deinitialize() {
     delete motor_left1;
     delete motor_left2;
 
-    std::cout << "Drivetrain initialized." << std::endl;
+    logger::println(logger::warning, "[DriveTrain] successfully initialized.");
 }
 
 void DriveTrain::driveArcade(const double& speed, const double& turn) {
@@ -57,5 +57,3 @@ void DriveTrain::update() {}
 bool DriveTrain::condition() {
     return robotState != SHUTTING_DOWN;
 }
-
-}  // namespace frc2020

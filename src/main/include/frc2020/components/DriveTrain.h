@@ -5,8 +5,6 @@
 
 #include <string>
 
-namespace frc2020 {
-
 class DriveTrain : public events::Event {
    private:
     const std::string settingsPath = "conf/drivetrain.rcfg";
@@ -33,4 +31,3 @@ class DriveTrain : public events::Event {
     void driveArcade(const double& speed, const double& turn);
     void driveTank(const double& right, const double& left);
 };
-}  // namespace frc2020

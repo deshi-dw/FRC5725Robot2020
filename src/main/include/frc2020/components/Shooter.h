@@ -1,12 +1,13 @@
 #pragma once
 
+namespace rev {
+class CANSparkMax;
+class CANEncoder;
+}  // namespace rev
+
 #include <cerberus/Event.h>
-#include <rev/CANEncoder.h>
-#include <rev/CANSparkMax.h>
 
 #include <string>
-
-namespace frc2020 {
 
 class Shooter : public events::Event {
    private:
@@ -32,4 +33,3 @@ class Shooter : public events::Event {
 
     void shoot(const double& top, const double& bottom);
 };
-}  // namespace frc2020
