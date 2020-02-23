@@ -1,5 +1,6 @@
 #pragma once
 
+// class Event;
 #include <cerberus/Event.h>
 
 #include <functional>
@@ -64,6 +65,13 @@ const Event* get(const std::type_info& type);
  * Clears all events from the event list. If the list is currently being updates, it will be cleared after the update.
  */
 void clear();
+
+/**
+ * Gets the amount of events currently stored.
+ * 
+ * @return returns the current event count.
+ */
+const std::size_t size();
 
 /**
  * Updates each event added to the event list. This should be called periodically throughout runtime.

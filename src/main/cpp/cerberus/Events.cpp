@@ -54,6 +54,10 @@ void clear() {
     }
 }
 
+const std::size_t size() {
+    return m_events.size();
+}
+
 void update() {
     // Loop through each stored event.
     isUpdating = true;
