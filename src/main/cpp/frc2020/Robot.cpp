@@ -51,6 +51,7 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    m_robotTime = this->GetPeriod().value();
     // std::cout << "robotTime: " << this->GetPeriod().value() << std::endl;
 }
 
@@ -81,6 +82,10 @@ void Robot::TestInit() {
 void Robot::TestPeriodic() {
     input::update();
     events::update();
+}
+
+double getRobotTime() {
+    return Robot::m_robotTime;
 }
 
 #ifndef RUNNING_FRC_TESTS

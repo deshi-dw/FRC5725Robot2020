@@ -9,6 +9,15 @@
 
 #include <frc/TimedRobot.h>
 
+enum RobotState {
+    DISABLED,
+    TESTING,
+    AUTONOMOUS,
+    TELEOP,
+    SHUTTING_DOWN,
+    BOOTING_UP
+};
+
 class Robot : public frc::TimedRobot {
    public:
     void RobotInit() override;
@@ -25,15 +34,11 @@ class Robot : public frc::TimedRobot {
 
     void TestInit() override;
     void TestPeriodic() override;
+
+    static double m_robotTime;
 };
 
-enum RobotState {
-    DISABLED,
-    TESTING,
-    AUTONOMOUS,
-    TELEOP,
-    SHUTTING_DOWN,
-    BOOTING_UP
-};
-
+// TODO: move inside Robot class. (ie. Robot::m_robotState + getRobotState())
 static RobotState robotState;
+
+extern double getRobotTime();
