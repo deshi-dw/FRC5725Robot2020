@@ -1,5 +1,6 @@
 #pragma once
 
+#include <frc/SPI.h>
 #include <AHRS.h>
 #include <cerberus/Event.h>
 #include <cerberus/Logger.h>
@@ -14,7 +15,7 @@ class EventLogMotion : public events::Event {
     }
 
     void initialize() {
-        ahrs = new AHRS(SPI::Port::kMXP);
+        ahrs = new AHRS(frc::SPI::Port::kMXP);
         ahrs->Reset();
     }
 
