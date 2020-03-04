@@ -15,20 +15,26 @@ void Intake::initialize() {
     cfg::get<double>("hardware::motor_intake1::set_speed", speed);
     
     channel = 6;
-	speed = 1.0;
+    channel_pully1 = 7;
+
+	speed = 0.0;
 
     motor = new frc::Spark(channel);
+    motor_pully1 = new frc::Spark(channel_pully1);
 }
 
 void Intake::deinitialize() {
     delete motor;
+    delete motor_pully1;
 }
 void Intake::update() {
     if(m_isOn == true) {
         motor->SetSpeed(speed);
+        motor_pully1->SetSpeed(speed);
     }
 	else {
 		motor->StopMotor();
+        motor_pully1->StopMotor();
 	}
 }
 
