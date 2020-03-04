@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <util/ByteSwap.h>
 
-class EventTest : public events::Event {
+class EventTest : public Event {
    public:
     EventTest() {}
 

@@ -19,7 +19,7 @@ void Intake::initialize() {
 
     motor = new frc::Spark(channel);
 
-    logger::println(logger::warning, "[Intake] successfully initialized.");
+    logger::println(logger::info, "[Intake] successfully initialized.");
 }
 
 void Intake::deinitialize() {
@@ -34,7 +34,7 @@ void Intake::update() {
 }
 
 bool Intake::condition() {
-    return robotState != RobotState::SHUTTING_DOWN;
+    return Robot::getRobotState() != RobotState::SHUTTING_DOWN;
 }
 
 void Intake::toggle(bool isOn) {

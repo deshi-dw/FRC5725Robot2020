@@ -5,7 +5,7 @@ struct input::Analog;
 
 #include <cerberus/Event.h>
 
-class HumanDriveController : public events::Event {
+class HumanDriveController : public Event {
    private:
     // FIXME: speed and turn axis are flipped in the drivetrain view.
     // FIXME: put definition in constructor.

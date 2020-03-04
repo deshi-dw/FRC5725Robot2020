@@ -29,14 +29,15 @@ void DriveTrain::initialize() {
     // motor_right2 = new frc::Spark(pin_right2);
     motor_left1 = new frc::Spark(pin_left1);
     motor_left2 = new frc::Spark(pin_left2);
+
+    logger::println(logger::info, "[DriveTrain] successfully initialized.");
 }
+
 void DriveTrain::deinitialize() {
     delete motor_right1;
     // delete motor_right2;
     delete motor_left1;
     delete motor_left2;
-
-    logger::println(logger::warning, "[DriveTrain] successfully initialized.");
 }
 
 void DriveTrain::driveArcade(const double& speed, const double& turn) {
@@ -55,5 +56,5 @@ void DriveTrain::driveTank(const double& right, const double& left) {
 void DriveTrain::update() {}
 
 bool DriveTrain::condition() {
-    return robotState != SHUTTING_DOWN;
+    return Robot::getRobotState() != SHUTTING_DOWN;
 }

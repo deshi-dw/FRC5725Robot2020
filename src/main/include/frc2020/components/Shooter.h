@@ -9,7 +9,7 @@ class CANEncoder;
 
 #include <string>
 
-class Shooter : public events::Event {
+class Shooter : public Event {
    private:
     const std::string settingsPath = "conf/drivetrain.rcfg";
 

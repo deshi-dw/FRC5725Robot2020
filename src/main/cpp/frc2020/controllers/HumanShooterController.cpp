@@ -1,6 +1,4 @@
-#pragma once
-
-#include <cerberus/Events.h>
+#include <cerberus/EventManager.h>
 #include <cerberus/Inputs.h>
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
@@ -12,7 +10,7 @@
 HumanShooterController::HumanShooterController() {}
 
 void HumanShooterController::initialize() {
-    shooter = (Shooter*)events::get(typeid(Shooter));
+    shooter = (Shooter*)Robot::events->get(typeid(Shooter));
 
     if (shooter == nullptr) {
         logger::println(logger::error, "[HumanShooterController] failed to get the intake event.");
@@ -37,5 +35,5 @@ void HumanShooterController::update() {
 }
 
 bool HumanShooterController::condition() {
-    return robotState == RobotState::TELEOP || robotState == RobotState::TESTING;
+    return Robot::getRobotState() == RobotState::TELEOP || Robot::getRobotState() == RobotState::TESTING;
 }

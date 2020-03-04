@@ -5,7 +5,7 @@ struct input::Digital;
 
 #include <cerberus/Event.h>
 
-class HumanIntakeController : public events::Event {
+class HumanIntakeController : public Event {
    private:
     // FIXME: put definition in constructor.
     input::Digital input_toggle = input::Digital(1);

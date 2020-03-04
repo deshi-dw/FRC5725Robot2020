@@ -5,7 +5,7 @@ struct input::Analog;
 
 #include <cerberus/Event.h>
 
-class HumanShooterController : public events::Event {
+class HumanShooterController : public Event {
    private:
     input::Analog speed_top = input::Analog(2);
     input::Analog speed_bottom = input::Analog(3);

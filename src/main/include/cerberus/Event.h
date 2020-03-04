@@ -1,6 +1,5 @@
 #pragma once
 
-namespace events {
 class Event {
    public:
     virtual bool condition() = 0;
@@ -11,4 +10,3 @@ class Event {
     bool isEnabled = true;
     bool hasFiredOnce = false;
 };
-}  // namespace events

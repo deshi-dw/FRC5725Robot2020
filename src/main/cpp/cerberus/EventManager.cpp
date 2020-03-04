@@ -1,10 +1,9 @@
 #include <cerberus/Event.h>
-#include <cerberus/Events.h>
+#include <cerberus/EventManager.h>
 
 #include <typeinfo>
 
-namespace events {
-const int add(Event* event) {
+const int EventManager::add(Event* event) {
     if (isUpdating == false) {
         // If the events aren't being updated, add the event to the event list.
         m_events.push_back(event);
@@ -12,29 +11,29 @@ const int add(Event* event) {
         // Return the index of the event added.
         return m_events.size();
     } else {
-        afterUpdate.push_back([&event]() -> void { add(event); });
+        afterUpdate.push_back([&event, this]() -> void { add(event); });
         // TODO: Check that returning events.size() + 1 is corrent here. It might be events.size() instead.
         // Return the *future* index of the event added.
         return m_events.size() + 1;
     }
 }
 
-void remove(int id) {
+void EventManager::remove(int id) {
     if (isUpdating == false) {
         // If the events aren't being updated, remove the requested event.
         m_events.erase(m_events.begin() + id);
     } else {
         // If the events are being updated, schedule the requested event to be removed after the
         // update.
-        afterUpdate.push_back([id]() -> void { remove(id); });
+        afterUpdate.push_back([id, this]() -> void { remove(id); });
     }
 }
 
-const Event* get(int id) {
+const Event* EventManager::get(int id) {
     return m_events[id];
 }
 
-const Event* get(const std::type_info& type) {
+const Event* EventManager::get(const std::type_info& type) {
     for (std::size_t i = 0; i < m_events.size(); i++) {
         if (type == typeid(*m_events[i])) {
             return m_events[i];
@@ -44,21 +43,21 @@ const Event* get(const std::type_info& type) {
     return nullptr;
 }
 
-void clear() {
+void EventManager::clear() {
     if (isUpdating == false) {
         // If the events aren't being updated, clear them.
         m_events.clear();
     } else {
         // If the events are being updated, schedule them to be cleared after the update.
-        afterUpdate.push_back(clear);
+        afterUpdate.push_back([this]() -> void { clear(); });
     }
 }
 
-const std::size_t size() {
+const std::size_t EventManager::size() {
     return m_events.size();
 }
 
-void update() {
+void EventManager::update() {
     // Loop through each stored event.
     isUpdating = true;
     for (int i = 0; i < m_events.size(); i++) {
@@ -89,5 +88,3 @@ void update() {
     }
     afterUpdate.clear();
 }
-
-}  // namespace events

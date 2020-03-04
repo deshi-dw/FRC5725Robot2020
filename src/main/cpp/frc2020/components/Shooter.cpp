@@ -25,7 +25,7 @@ void Shooter::initialize() {
     encoder_top = new rev::CANEncoder(*motor_top, rev::CANEncoder::EncoderType::kHallSensor, 0);
     encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
 
-    logger::println(logger::warning, "[Shooter] successfully initialized.");
+    logger::println(logger::info, "[Shooter] successfully initialized.");
 }
 
 void Shooter::deinitialize() {
@@ -36,7 +36,7 @@ void Shooter::deinitialize() {
 void Shooter::update() {}
 
 bool Shooter::condition() {
-    return robotState != RobotState::SHUTTING_DOWN;
+    return Robot::getRobotState() != RobotState::SHUTTING_DOWN;
 }
 
 void Shooter::shoot(const double& top, const double& bottom) {

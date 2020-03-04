@@ -5,7 +5,7 @@
 
 #include <string>
 
-class Intake : public events::Event {
+class Intake : public Event {
    private:
     const std::string settingsPath = "conf/intake.rcfg";
     frc::Spark* motor;

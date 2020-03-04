@@ -1,4 +1,4 @@
-#include <cerberus/Events.h>
+#include <cerberus/EventManager.h>
 #include <cerberus/Inputs.h>
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
@@ -10,7 +10,7 @@
 HumanIntakeController::HumanIntakeController() {}
 
 void HumanIntakeController::initialize() {
-    intake = (Intake*)events::get(typeid(Intake));
+    intake = (Intake*)Robot::events->get(typeid(Intake));
 
     if (intake == nullptr) {
         logger::println(logger::error, "[HumanIntakeController] failed to get the intake event.");
@@ -37,5 +37,5 @@ void HumanIntakeController::update() {
 }
 
 bool HumanIntakeController::condition() {
-    return robotState == RobotState::TELEOP || robotState == RobotState::TESTING;
+    return Robot::getRobotState() == RobotState::TELEOP || Robot::getRobotState() == RobotState::TESTING;
 }
