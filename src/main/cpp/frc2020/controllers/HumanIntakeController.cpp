@@ -1,5 +1,5 @@
 #include <cerberus/EventManager.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/InputManager.h>
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/Intake.h>
@@ -17,13 +17,13 @@ void HumanIntakeController::initialize() {
         logger::println(logger::warning, "[HumanIntakeController] failed to initialize.");
     }
 
-    input::add<input::Digital>(&input_toggle);
+    Robot::inputs->add<DigitalInput>(&input_toggle);
 
     logger::println(logger::warning, "[HumanIntakeController] successfully initialized.");
 }
 
 void HumanIntakeController::deinitialize() {
-    input::remove<input::Digital>(&input_toggle);
+    Robot::inputs->remove<DigitalInput>(&input_toggle);
 
     logger::println(logger::warning, "[HumanIntakeController] successfully deinitialized.");
 }

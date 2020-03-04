@@ -10,6 +10,7 @@
 #include <frc/TimedRobot.h>
 
 class EventManager;
+class InputManager;
 
 enum RobotState {
     DISABLED,
@@ -38,6 +39,7 @@ class Robot : public frc::TimedRobot {
     void TestPeriodic() override;
 
     static EventManager* events;
+    static InputManager* inputs;
 
     static RobotState getRobotState();
     static double getRobotTime();

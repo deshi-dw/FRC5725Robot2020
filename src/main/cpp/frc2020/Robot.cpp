@@ -8,7 +8,7 @@
 #include <CompilerSettings.h>
 #include <cerberus/EventManager.h>
 #include <cerberus/Hardware.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/InputManager.h>
 #include <cerberus/Logger.h>
 #include <cerberus/Networking.h>
 #include <frc/Joystick.h>
@@ -30,6 +30,7 @@ double Robot::m_robotTime = 0.0;
 RobotState Robot::m_robotState = RobotState::BOOTING_UP;
 
 EventManager* Robot::events = new EventManager();
+InputManager* Robot::inputs = new InputManager();
 
 RobotState Robot::getRobotState() {
     return m_robotState;
@@ -94,7 +95,7 @@ void Robot::TestInit() {
     logger::println(logger::info, "RobotState = TESTING");
 }
 void Robot::TestPeriodic() {
-    input::update();
+    inputs->update();
     events->update();
 }
 

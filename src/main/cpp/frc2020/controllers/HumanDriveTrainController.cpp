@@ -1,5 +1,5 @@
 #include <cerberus/EventManager.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/InputManager.h>
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
@@ -21,14 +21,14 @@ void HumanDriveController::initialize() {
     // drive_turn.isDeadZoned = true;
     drive_turn.deadZone = 0.15;
 
-    input::add<input::Analog>(&drive_speed);
-    input::add<input::Analog>(&drive_turn);
+    Robot::inputs->add<AnalogInput>(&drive_speed);
+    Robot::inputs->add<AnalogInput>(&drive_turn);
 
     logger::println(logger::warning, "[HumanDriveController] successfully initialized.");
 }
 void HumanDriveController::deinitialize() {
-    input::remove<input::Analog>(&drive_speed);
-    input::remove<input::Analog>(&drive_turn);
+    Robot::inputs->remove<AnalogInput>(&drive_speed);
+    Robot::inputs->remove<AnalogInput>(&drive_turn);
 
     logger::println(logger::warning, "[HumanDriveController] successfully deinitialized.");
 }

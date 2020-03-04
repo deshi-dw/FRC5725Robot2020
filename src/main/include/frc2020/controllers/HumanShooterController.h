@@ -1,14 +1,14 @@
 #pragma once
 
 class Shooter;
-struct input::Analog;
+struct AnalogInput;
 
 #include <cerberus/Event.h>
 
 class HumanShooterController : public Event {
    private:
-    input::Analog speed_top = input::Analog(2);
-    input::Analog speed_bottom = input::Analog(3);
+    AnalogInput speed_top = AnalogInput(2);
+    AnalogInput speed_bottom = AnalogInput(3);
 
     Shooter* shooter;
 

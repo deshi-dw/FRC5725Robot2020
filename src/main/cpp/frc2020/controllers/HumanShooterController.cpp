@@ -1,5 +1,5 @@
 #include <cerberus/EventManager.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/InputManager.h>
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/Shooter.h>
@@ -17,15 +17,15 @@ void HumanShooterController::initialize() {
         logger::println(logger::warning, "[HumanShooterController] failed to initialize.");
     }
 
-    input::add<input::Analog>(&speed_top);
-    input::add<input::Analog>(&speed_bottom);
+    Robot::inputs->add<AnalogInput>(&speed_top);
+    Robot::inputs->add<AnalogInput>(&speed_bottom);
 
     logger::println(logger::warning, "[HumanShooterController] successfully initialized.");
 }
 
 void HumanShooterController::deinitialize() {
-    input::remove<input::Analog>(&speed_top);
-    input::remove<input::Analog>(&speed_bottom);
+    Robot::inputs->remove<AnalogInput>(&speed_top);
+    Robot::inputs->remove<AnalogInput>(&speed_bottom);
 
     logger::println(logger::warning, "[HumanShooterController] successfully deinitialized.");
 }
