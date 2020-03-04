@@ -1,12 +1,13 @@
-#include <frc2020/components/DriveTrain.h>
 #include <cerberus/Hardware.h>
+#include <cerberus/Logger.h>
 #include <cerberus/Settings.h>
-
 #include <frc/Spark.h>
-
+#include <frc2020/Robot.h>
+#include <frc2020/components/DriveTrain.h>
 #include <stdio.h>
 
-namespace frc2020 {
+#include <iostream>
+
 DriveTrain::DriveTrain() {}
 
 DriveTrain::~DriveTrain() {}
@@ -28,16 +29,14 @@ void DriveTrain::initialize() {
     // motor_right2 = new frc::Spark(pin_right2);
     motor_left1 = new frc::Spark(pin_left1);
     motor_left2 = new frc::Spark(pin_left2);
-
-	m_isInitialized = true;
 }
 void DriveTrain::deinitialize() {
-	delete motor_right1;
-	// delete motor_right2;
-	delete motor_left1;
-	delete motor_left2;
+    delete motor_right1;
+    // delete motor_right2;
+    delete motor_left1;
+    delete motor_left2;
 
-	m_isInitialized = false;
+    logger::println(logger::warning, "[DriveTrain] successfully initialized.");
 }
 
 void DriveTrain::driveArcade(const double& speed, const double& turn) {
@@ -51,10 +50,10 @@ void DriveTrain::driveTank(const double& right, const double& left) {
 
     motor_left1->SetSpeed(left);
     motor_left2->SetSpeed(left);
-
-    std::cout << "drivetrain r:" << right << " l:" << left << std::endl;
 }
 
 void DriveTrain::update() {}
 
-}  // namespace frc2020
+bool DriveTrain::condition() {
+    return robotState != SHUTTING_DOWN;
+}

@@ -3,11 +3,9 @@
 #include <cerberus/Event.h>
 
 class WaitFor : public events::Event {
-	public:
-	WaitFor(Event& event);
+   public:
+    WaitFor(Event& event);
 
-	private:
-	Event& event;
-
+   private:
+    Event& event;
 };
-

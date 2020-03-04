@@ -48,6 +48,7 @@ bool isUpdating = false;
 void networkingThread();
 void listenerThread();
 
+
 void initialize() {
 	#ifdef _WIN32
 	WSADATA wsaData;

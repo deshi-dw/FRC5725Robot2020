@@ -1,27 +1,24 @@
 #pragma once
 
-#include <functional>
-#include <vector>
-
+// class Event;
 #include <cerberus/Event.h>
 
-#ifndef EVENT_RESERVE_COUNT
-#define EVENT_RESERVE_COUNT 32
-#endif
+#include <functional>
+#include <vector>
 
 namespace events {
 namespace {
 /**
  * A list of Event objects. All events in this list will be updated each Update call.
  */
-std::vector<Event*> events = std::vector<Event*>();
+std::vector<Event*> m_events;
 
 /**
  * A list of functions to trigger after the event list is updated.
  * 
  * This is mostly used for manipulating the events list within an event from the events list without distrupting the update cycle.
  */
-std::vector<std::function<void()>> afterUpdate = std::vector<std::function<void()>>();
+std::vector<std::function<void()>> afterUpdate;
 
 /**
  * A simple check to see if the update loop is being executed or not.
@@ -39,7 +36,7 @@ bool isUpdating = false;
  * 
  * @warning If this function was called during the event cycle, the event will be added to the list after the cycle has passed. This means that the id returned will not be valid until the update is over.
  */
-int add(Event* event);
+const int add(Event* event);
 
 /**
  * Removes the event referenced by the id provided. If the event list is being updated, it will be removed after the update.
@@ -54,7 +51,15 @@ void remove(int id);
  * @param id: The id of the event to return.
  * @return the Event tied to the provided id.
  */
-Event* get(int id);
+const Event* get(int id);
+
+/**
+ * Get an event by its type.
+ * 
+ * @param type The type of the event. Can be gotton from the operator typeid(type).
+ * @return the first event of the specifed type.
+ */
+const Event* get(const std::type_info& type);
 
 /**
  * Clears all events from the event list. If the list is currently being updates, it will be cleared after the update.
@@ -62,8 +67,15 @@ Event* get(int id);
 void clear();
 
 /**
+ * Gets the amount of events currently stored.
+ * 
+ * @return returns the current event count.
+ */
+const std::size_t size();
+
+/**
  * Updates each event added to the event list. This should be called periodically throughout runtime.
  */
 void update();
 
-}  // namespace Events
+}  // namespace events

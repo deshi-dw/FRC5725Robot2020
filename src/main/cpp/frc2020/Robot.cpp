@@ -5,61 +5,49 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include <CompilerSettings.h>
 #include <cerberus/Events.h>
 #include <cerberus/Hardware.h>
 #include <cerberus/Inputs.h>
+#include <cerberus/Logger.h>
 #include <cerberus/Networking.h>
-#include <cerberus/Components.h>
+#include <frc/Joystick.h>
 #include <frc2020/Robot.h>
+#include <frc2020/components/DriveTrain.h>
+#include <frc2020/components/Intake.h>
+#include <frc2020/components/Shooter.h>
 #include <frc2020/controllers/HumanDriveController.h>
+#include <frc2020/controllers/HumanIntakeController.h>
 #include <frc2020/controllers/HumanShooterController.h>
+#include <frc2020/events/EventLogMotion.h>
 #include <frc2020/events/EventTest.h>
 
-#include <frc/Joystick.h>
-// #include <wpi/TCPStream.h>
-
-// #include <cstdio>
-// #include <cstring>
-
-// #ifdef _WIN32
-// #define _WINSOCK_DEPRECATED_NO_WARNINGS
-// #include <WinSock2.h>
-// #include <Ws2tcpip.h>
-// #pragma comment(lib, "Ws2_32.lib")
-// #else
-// #include <arpa/inet.h>
-// #include <fcntl.h>
-// #include <netinet/in.h>
-// #include <unistd.h>
-// #endif
-
+#include <iostream>
 #include <sstream>
 #include <string>
 
-frc::Joystick joystick = frc::Joystick(0);
-EventTest eventTest = EventTest();
-
-frc2020::DriveTrain drivetrain;
-frc2020::Shooter shooter;
-
-// wpi::TCPStream tcp = wpi::TCPStream(socket(PF_INET, SOCK_STREAM, 0), );
-
-frc2020::HumanDriveController driveController = frc2020::HumanDriveController(drivetrain);
-frc2020::HumanShooterController shooterController = frc2020::HumanShooterController(shooter);
-
 void Robot::RobotInit() {
-    net::initialize();
-    events::add(&eventTest);
+    logger::initialize();
+    logger::println(logger::info, "Robot Initializing...");
+    logger::println();
 
-	components::add(&drivetrain);
-	components::add(&shooter);
+    logger::println(logger::info, "adding events...");
+    events::add(new EventTest());
 
-	components::add(&driveController);
-	components::add(&shooterController);
+    events::add(new DriveTrain());
+    events::add(new Shooter());
+    events::add(new Intake());
 
-    this->IsTest();
+    events::add(new HumanDriveController());
+    events::add(new HumanShooterController());
+    events::add(new HumanIntakeController());
 
-	components::initialize();
+    logger::println(logger::info, "%u events added.", events::size());
+    logger::println();
+
+    events::update();
+
+    logger::println(logger::info, "Robot Initialization Complete.");
 }
 
 void Robot::RobotPeriodic() {
@@ -67,27 +55,30 @@ void Robot::RobotPeriodic() {
 }
 
 void Robot::DisabledInit() {
-	c_robotState = State::DISABLED;
-	components::deinitialize();
+    robotState = RobotState::DISABLED;
+
+    logger::println(logger::info, "RobotState = DISABLED");
 }
 
 void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() {
-	c_robotState = State::AUTONOMOUS;
+    robotState = RobotState::AUTONOMOUS;
+    logger::println(logger::info, "RobotState = AUTONOMOUS");
 }
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-	c_robotState = State::TELEOP;
+    robotState = RobotState::TELEOP;
+    logger::println(logger::info, "RobotState = TELEOP");
 }
 void Robot::TeleopPeriodic() {}
 
 void Robot::TestInit() {
-	c_robotState = State::TESTING;
+    robotState = RobotState::TESTING;
+    logger::println(logger::info, "RobotState = TESTING");
 }
 void Robot::TestPeriodic() {
-    net::update();
     input::update();
     events::update();
 }

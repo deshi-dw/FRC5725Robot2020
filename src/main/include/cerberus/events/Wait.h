@@ -3,11 +3,9 @@
 #include <cerberus/Event.h>
 
 class Wait : public events::Event {
-	public:
-	Wait(long time);
+   public:
+    Wait(long time);
 
-	private:
-	long time;
-
+   private:
+    long time;
 };
-
