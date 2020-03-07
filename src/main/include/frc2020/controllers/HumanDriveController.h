@@ -1,23 +1,22 @@
 #pragma once
 
-#include <util/RobotState.h>
 #include <cerberus/Component.h>
 #include <cerberus/Inputs.h>
 #include <frc2020/components/DriveTrain.h>
-
-#include<stdio.h>
+#include <stdio.h>
+#include <util/RobotState.h>
 
 namespace frc2020 {
 class HumanDriveController : public Component {
-    private:
+   private:
     // FIXME: speed and turn axis are flipped in the drivetrain view.
     input::Analog drive_speed = input::Analog(0);
     input::Analog drive_turn = input::Analog(1);
 
-	frc2020::DriveTrain& drivetrain;
+    frc2020::DriveTrain& drivetrain;
 
-    public:
-	HumanDriveController(frc2020::DriveTrain& drivetrain) : drivetrain(drivetrain) {}
+   public:
+    HumanDriveController(frc2020::DriveTrain& drivetrain) : drivetrain(drivetrain) {}
 
     void initialize() {
         // drive_speed.isDeadZoned = true;
@@ -41,8 +40,8 @@ class HumanDriveController : public Component {
         drivetrain.driveArcade(drive_speed.value * 0.4, drive_turn.value * 0.4);
     }
 
-	bool updateCondition() {
-		return c_robotState == RobotState::TELEOP || c_robotState == RobotState::TESTING;
-	}
+    bool updateCondition() {
+        return c_robotState == RobotState::TELEOP || c_robotState == RobotState::TESTING;
+    }
 };
-}
+}  // namespace frc2020

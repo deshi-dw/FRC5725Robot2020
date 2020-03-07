@@ -4,7 +4,7 @@
 #include <cerberus/Hardware.h>
 #include <cerberus/Settings.h>
 
-#include <frc/Spark.h>
+#include <rev/CANSparkMax.h>
 
 namespace frc2020 {
 Intake::Intake() { }
@@ -14,13 +14,14 @@ void Intake::initialize() {
     cfg::get<int>("hardware::motor_intake1::channel", channel);
     cfg::get<double>("hardware::motor_intake1::set_speed", speed);
     
-    channel = 6;
-    channel_pully1 = 7;
+    channel = 4;
+    channel_pully1 = 8;
 
-	speed = 0.0;
+	speed = 1.0;
+	speed_pully = 0.30;
 
     motor = new frc::Spark(channel);
-    motor_pully1 = new frc::Spark(channel_pully1);
+    motor_pully1 = new rev::CANSparkMax(channel_pully1, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 }
 
 void Intake::deinitialize() {
@@ -28,9 +29,13 @@ void Intake::deinitialize() {
     delete motor_pully1;
 }
 void Intake::update() {
-    if(m_isOn == true) {
+    if(state == State::UP) {
         motor->SetSpeed(speed);
-        motor_pully1->SetSpeed(speed);
+        motor_pully1->Set(speed_pully);
+    }
+    else if(state == State::DOWN) {
+        motor->SetSpeed(-speed);
+        motor_pully1->Set(-speed_pully);
     }
 	else {
 		motor->StopMotor();
@@ -38,8 +43,11 @@ void Intake::update() {
 	}
 }
 
-void Intake::toggle(bool isOn) {
-    m_isOn = isOn;
+void Intake::setState(Intake::State newState) {
+    state = newState;
+}
+void Intake::setPulySpeed(double newSpeed) {
+    speed_pully = newSpeed;
 }
 
 }  // namespace frc2020

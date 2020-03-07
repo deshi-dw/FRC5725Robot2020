@@ -3,6 +3,7 @@
 #include <cerberus/Component.h>
 
 #include <frc/Spark.h>
+#include <rev/CANSparkMax.h>
 
 #include <string>
 
@@ -13,11 +14,17 @@ class Intake : public Component {
     const std::string settingsPath = "conf/intake.rcfg";
 	frc::Spark* motor;
 
-	frc::Spark* motor_pully1;
-
-    bool m_isOn;
+	rev::CANSparkMax* motor_pully1;
 
    public:
+    enum State {
+        IDLE,
+        UP,
+        DOWN
+    };
+
+    State state = State::IDLE;
+
     int channel = 0;
     int channel_pully1 = 0;
 
@@ -30,7 +37,8 @@ class Intake : public Component {
     void initialize();
     void deinitialize();
     void update();
-
-    void toggle(bool isOn);
+    
+    void setState(Intake::State newState);
+    void setPulySpeed(double newSpeed);
 };
 }  // namespace frc2020
