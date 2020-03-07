@@ -5,7 +5,7 @@
 
 #include <string>
 
-class DriveTrain : public events::Event {
+class DriveTrain : public Event {
    private:
     const std::string settingsPath = "conf/drivetrain.rcfg";
 

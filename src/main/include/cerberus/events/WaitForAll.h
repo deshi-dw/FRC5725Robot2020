@@ -4,10 +4,14 @@
 
 #include <vector>
 
-class WaitForAll : public events::Event {
+namespace cerberus {
+
+class WaitForAll : public Event {
    public:
     WaitForAll(std::vector<Event>& events);
 
    private:
     std::vector<Event>& events;
 };
+
+}  // namespace cerberus

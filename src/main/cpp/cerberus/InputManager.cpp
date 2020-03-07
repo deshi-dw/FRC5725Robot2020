@@ -1,4 +1,4 @@
-#include <cerberus/Inputs.h>
+#include <cerberus/InputManager.h>
 #include <frc/Joystick.h>
 
 #include <vector>
@@ -7,11 +7,12 @@
 #define USE_WPILIB_INPUT 1
 #endif
 
-namespace input {
-void initialize() {}
-void deinitialize() {}
+namespace cerberus {
 
-void update() {
+void InputManager::initialize() {}
+void InputManager::deinitialize() {}
+
+void InputManager::update() {
     for (size_t i = 0; i < analogs.size(); i++) {
 #ifdef USE_WPILIB_INPUT
         analogs[i]->value = joystick.GetRawAxis(analogs[i]->axis);
@@ -40,27 +41,27 @@ void update() {
 }
 
 template <typename T>
-void add(T* input) {
+void InputManager::add(T* input) {
     // TODO: Log "Type provided is not a valid input type."
 }
 
 template <>
-void add<Analog>(Analog* input) {
+void InputManager::add<InputAnalog>(InputAnalog* input) {
     analogs.push_back(input);
 }
 
 template <>
-void add<Digital>(Digital* input) {
+void InputManager::add<InputDigital>(InputDigital* input) {
     digitals.push_back(input);
 }
 
 template <typename T>
-void remove(T* input) {
+void InputManager::remove(T* input) {
     // TODO: Log "Type provided is not a valid input type."
 }
 
 template <>
-void remove<Analog>(Analog* input) {
+void InputManager::remove<InputAnalog>(InputAnalog* input) {
     for (size_t i = 0; i < analogs.size(); i++) {
         if (analogs[i] == input) {
             analogs.erase(analogs.begin() + i);
@@ -73,7 +74,7 @@ void remove<Analog>(Analog* input) {
 }
 
 template <>
-void remove<Digital>(Digital* input) {
+void InputManager::remove<InputDigital>(InputDigital* input) {
     for (size_t i = 0; i < digitals.size(); i++) {
         if (digitals[i] == input) {
             digitals.erase(digitals.begin() + i);
@@ -86,12 +87,12 @@ void remove<Digital>(Digital* input) {
 }
 
 template <typename T>
-T* get(int axis) {
+T* InputManager::get(int axis) {
     // TODO: Log "Type provided is not a valid input type."
 }
 
 template <>
-Analog* get<Analog>(int axis) {
+InputAnalog* InputManager::get<InputAnalog>(int axis) {
     for (size_t i = 0; i < analogs.size(); i++) {
         if (analogs[i]->axis == axis) {
             return analogs[i];
@@ -103,7 +104,7 @@ Analog* get<Analog>(int axis) {
 }
 
 template <>
-Digital* get<Digital>(int axis) {
+InputDigital* InputManager::get<InputDigital>(int axis) {
     for (size_t i = 0; i < digitals.size(); i++) {
         if (digitals[i]->axis == axis) {
             return digitals[i];
@@ -113,4 +114,5 @@ Digital* get<Digital>(int axis) {
     // TODO: Log "axis could not be found."
     return nullptr;
 }
-}  // namespace input
+
+}  // namespace cerberus

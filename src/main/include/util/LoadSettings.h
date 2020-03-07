@@ -2,7 +2,7 @@
 
 #include <cerberus/Hardware.h>
 #include <cerberus/Inputs.h>
-#include <cerberus/Settings.h>
+#include <cerberus/ConfigManager.h>
 #include <frc/Spark.h>
 
 #include <string>

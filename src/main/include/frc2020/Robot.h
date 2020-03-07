@@ -9,6 +9,15 @@
 
 #include <frc/TimedRobot.h>
 
+namespace cerberus {
+class EventManager;
+class InputManager;
+class ConfigManager;
+class Logger;
+}  // namespace cerberus
+
+using namespace cerberus;
+
 enum RobotState {
     DISABLED,
     TESTING,
@@ -35,10 +44,15 @@ class Robot : public frc::TimedRobot {
     void TestInit() override;
     void TestPeriodic() override;
 
+    static EventManager* events;
+    static InputManager* inputs;
+    static ConfigManager* config;
+    static cerberus::Logger* logger;
+
+    static RobotState getRobotState();
+    static double getRobotTime();
+
+   protected:
     static double m_robotTime;
+    static RobotState m_robotState;
 };
-
-// TODO: move inside Robot class. (ie. Robot::m_robotState + getRobotState())
-static RobotState robotState;
-
-extern double getRobotTime();

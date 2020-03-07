@@ -1,7 +1,5 @@
-#pragma once
-
-#include <cerberus/Events.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/EventManager.h>
+#include <cerberus/InputManager.h>
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/Shooter.h>
@@ -9,27 +7,29 @@
 
 #include <iostream>
 
+using namespace cerberus;
+
 HumanShooterController::HumanShooterController() {}
 
 void HumanShooterController::initialize() {
-    shooter = (Shooter*)events::get(typeid(Shooter));
+    shooter = (Shooter*)Robot::events->get(typeid(Shooter));
 
     if (shooter == nullptr) {
-        logger::println(logger::error, "[HumanShooterController] failed to get the intake event.");
-        logger::println(logger::warning, "[HumanShooterController] failed to initialize.");
+        Robot::logger->println(Logger::error, "[HumanShooterController] failed to get the intake event.");
+        Robot::logger->println(Logger::warning, "[HumanShooterController] failed to initialize.");
     }
 
-    input::add<input::Analog>(&speed_top);
-    input::add<input::Analog>(&speed_bottom);
+    Robot::inputs->add<InputAnalog>(&speed_top);
+    Robot::inputs->add<InputAnalog>(&speed_bottom);
 
-    logger::println(logger::warning, "[HumanShooterController] successfully initialized.");
+    Robot::logger->println(Logger::warning, "[HumanShooterController] successfully initialized.");
 }
 
 void HumanShooterController::deinitialize() {
-    input::remove<input::Analog>(&speed_top);
-    input::remove<input::Analog>(&speed_bottom);
+    Robot::inputs->remove<InputAnalog>(&speed_top);
+    Robot::inputs->remove<InputAnalog>(&speed_bottom);
 
-    logger::println(logger::warning, "[HumanShooterController] successfully deinitialized.");
+    Robot::logger->println(Logger::warning, "[HumanShooterController] successfully deinitialized.");
 }
 
 void HumanShooterController::update() {
@@ -37,5 +37,5 @@ void HumanShooterController::update() {
 }
 
 bool HumanShooterController::condition() {
-    return robotState == RobotState::TELEOP || robotState == RobotState::TESTING;
+    return Robot::getRobotState() == RobotState::TELEOP || Robot::getRobotState() == RobotState::TESTING;
 }

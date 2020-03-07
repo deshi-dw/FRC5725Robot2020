@@ -1,5 +1,5 @@
 #include <cerberus/Logger.h>
-#include <cerberus/Settings.h>
+#include <cerberus/ConfigManager.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/Shooter.h>
 #include <rev/CANEncoder.h>
@@ -13,8 +13,8 @@ Shooter::~Shooter() {}
 void Shooter::initialize() {
     // cfg::load(settingsPath);
 
-    cfg::get<int>("hardware::motor_right1::pin", pin_top);
-    cfg::get<int>("hardware::motor_right2::pin", pin_bottom);
+    Robot::config->get<int>("hardware::motor_right1::pin", pin_top);
+    Robot::config->get<int>("hardware::motor_right2::pin", pin_bottom);
 
     pin_top = 5;
     pin_bottom = 6;
@@ -25,7 +25,7 @@ void Shooter::initialize() {
     encoder_top = new rev::CANEncoder(*motor_top, rev::CANEncoder::EncoderType::kHallSensor, 0);
     encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
 
-    logger::println(logger::warning, "[Shooter] successfully initialized.");
+    Robot::logger->println(Logger::info, "[Shooter] successfully initialized.");
 }
 
 void Shooter::deinitialize() {
@@ -36,7 +36,7 @@ void Shooter::deinitialize() {
 void Shooter::update() {}
 
 bool Shooter::condition() {
-    return robotState != RobotState::SHUTTING_DOWN;
+    return Robot::getRobotState() != RobotState::SHUTTING_DOWN;
 }
 
 void Shooter::shoot(const double& top, const double& bottom) {

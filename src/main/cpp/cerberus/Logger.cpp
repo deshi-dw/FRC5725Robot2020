@@ -4,25 +4,23 @@
 #include <string>
 #include <vector>
 
-namespace logger {
+namespace cerberus {
 
-std::map<const std::string, uint32_t> m_flags;
-std::vector<std::pair<uint32_t, const std::string>> m_logs;
-int flagCount = 0;
+Logger::Logger() {
+    m_logs.reserve(256);
 
-void initialize() {
     m_flags["INFO"] = info;
     m_flags["WARNING"] = warning;
     m_flags["ERROR"] = error;
 }
 
-void deinitialize() {
+Logger::~Logger() {
     m_flags.clear();
 }
 
-uint32_t addFlag(const std::string& flag_name) {
+uint32_t Logger::addFlag(const std::string& flag_name) {
     if (flagCount >= 32) {
-        logger::print(warning, "the maximum number of 32 flags reached. No more can be created.");
+        print(warning, "the maximum number of 32 flags reached. No more can be created.");
         return 0;
     }
 
@@ -32,23 +30,23 @@ uint32_t addFlag(const std::string& flag_name) {
     return m_flags[flag_name];
 }
 
-uint32_t getFlag(const std::string& flag_name) {
+uint32_t Logger::getFlag(const std::string& flag_name) {
     return m_flags[flag_name];
 }
 
-void removeFlag(const std::string& flag_name) {
+void Logger::removeFlag(const std::string& flag_name) {
     m_flags.erase(flag_name);
 }
 
-void clear() {
+void Logger::clear() {
     m_logs.clear();
 }
 
-void println() {
+void Logger::println() {
     print(0, "\r\n");
 }
 
-std::vector<const std::pair<uint32_t, const std::string>*> getLogs(uint32_t flag) {
+std::vector<const std::pair<uint32_t, const std::string>*> Logger::getLogs(uint32_t flag) {
     std::vector<const std::pair<uint32_t, const std::string>*> return_logs;
 
     for (size_t i = 0; i < m_logs.size(); i++) {
@@ -59,4 +57,5 @@ std::vector<const std::pair<uint32_t, const std::string>*> getLogs(uint32_t flag
 
     return return_logs;
 }
-}  // namespace logger
+
+}  // namespace cerberus

@@ -1,18 +1,20 @@
-#include <cerberus/Events.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/EventManager.h>
+#include <cerberus/InputManager.h>
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
 #include <frc2020/controllers/HumanDriveController.h>
 
+using namespace cerberus;
+
 HumanDriveController::HumanDriveController() {}
 
 void HumanDriveController::initialize() {
-    drivetrain = (DriveTrain*)events::get(typeid(DriveTrain));
+    drivetrain = (DriveTrain*)Robot::events->get(typeid(DriveTrain));
 
     if (drivetrain == nullptr) {
-        logger::println(logger::error, "[HumanDriveController] failed to get the drivetrain event.");
-        logger::println(logger::warning, "[HumanDriveController] failed to initialize.");
+        Robot::logger->println(Logger::error, "[HumanDriveController] failed to get the drivetrain event.");
+        Robot::logger->println(Logger::warning, "[HumanDriveController] failed to initialize.");
     }
 
     // drive_speed.isDeadZoned = true;
@@ -21,16 +23,16 @@ void HumanDriveController::initialize() {
     // drive_turn.isDeadZoned = true;
     drive_turn.deadZone = 0.15;
 
-    input::add<input::Analog>(&drive_speed);
-    input::add<input::Analog>(&drive_turn);
+    Robot::inputs->add<InputAnalog>(&drive_speed);
+    Robot::inputs->add<InputAnalog>(&drive_turn);
 
-    logger::println(logger::warning, "[HumanDriveController] successfully initialized.");
+    Robot::logger->println(Logger::warning, "[HumanDriveController] successfully initialized.");
 }
 void HumanDriveController::deinitialize() {
-    input::remove<input::Analog>(&drive_speed);
-    input::remove<input::Analog>(&drive_turn);
+    Robot::inputs->remove<InputAnalog>(&drive_speed);
+    Robot::inputs->remove<InputAnalog>(&drive_turn);
 
-    logger::println(logger::warning, "[HumanDriveController] successfully deinitialized.");
+    Robot::logger->println(Logger::warning, "[HumanDriveController] successfully deinitialized.");
 }
 
 void HumanDriveController::update() {
@@ -38,5 +40,5 @@ void HumanDriveController::update() {
 }
 
 bool HumanDriveController::condition() {
-    return robotState == RobotState::TELEOP || robotState == RobotState::TESTING;
+    return Robot::getRobotState() == RobotState::TELEOP || Robot::getRobotState() == RobotState::TESTING;
 }

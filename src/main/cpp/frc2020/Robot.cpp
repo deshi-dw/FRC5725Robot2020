@@ -6,9 +6,10 @@
 /*----------------------------------------------------------------------------*/
 
 #include <CompilerSettings.h>
-#include <cerberus/Events.h>
+#include <cerberus/EventManager.h>
 #include <cerberus/Hardware.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/InputManager.h>
+#include <cerberus/ConfigManager.h>
 #include <cerberus/Logger.h>
 #include <cerberus/Networking.h>
 #include <frc/Joystick.h>
@@ -26,28 +27,45 @@
 #include <sstream>
 #include <string>
 
+double Robot::m_robotTime = 0.0;
+RobotState Robot::m_robotState = RobotState::BOOTING_UP;
+
+EventManager* Robot::events = new EventManager();
+InputManager* Robot::inputs = new InputManager();
+ConfigManager* Robot::config = new ConfigManager();
+
+cerberus::Logger* Robot::logger = new cerberus::Logger();
+
+RobotState Robot::getRobotState() {
+    return m_robotState;
+}
+
+double Robot::getRobotTime() {
+    return m_robotTime;
+}
+
 void Robot::RobotInit() {
-    logger::initialize();
-    logger::println(logger::info, "Robot Initializing...");
-    logger::println();
+    logger->println(cerberus::Logger::info, "Robot Initializing...");
+    logger->println();
 
-    logger::println(logger::info, "adding events...");
-    events::add(new EventTest());
+    logger->println(cerberus::Logger::info, "adding events...");
 
-    events::add(new DriveTrain());
-    events::add(new Shooter());
-    events::add(new Intake());
+    events->add(new EventTest());
 
-    events::add(new HumanDriveController());
-    events::add(new HumanShooterController());
-    events::add(new HumanIntakeController());
+    events->add(new DriveTrain());
+    events->add(new Shooter());
+    events->add(new Intake());
 
-    logger::println(logger::info, "%u events added.", events::size());
-    logger::println();
+    events->add(new HumanDriveController());
+    events->add(new HumanShooterController());
+    events->add(new HumanIntakeController());
 
-    events::update();
+    logger->println(cerberus::Logger::info, "%u events added.", events->size());
+    logger->println();
 
-    logger::println(logger::info, "Robot Initialization Complete.");
+    events->update();
+
+    logger->println(cerberus::Logger::info, "Robot Initialization Complete.");
 }
 
 void Robot::RobotPeriodic() {
@@ -56,36 +74,32 @@ void Robot::RobotPeriodic() {
 }
 
 void Robot::DisabledInit() {
-    robotState = RobotState::DISABLED;
+    m_robotState = RobotState::DISABLED;
 
-    logger::println(logger::info, "RobotState = DISABLED");
+    logger->println(cerberus::Logger::info, "RobotState = DISABLED");
 }
 
 void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() {
-    robotState = RobotState::AUTONOMOUS;
-    logger::println(logger::info, "RobotState = AUTONOMOUS");
+    m_robotState = RobotState::AUTONOMOUS;
+    logger->println(cerberus::Logger::info, "RobotState = AUTONOMOUS");
 }
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-    robotState = RobotState::TELEOP;
-    logger::println(logger::info, "RobotState = TELEOP");
+    m_robotState = RobotState::TELEOP;
+    logger->println(cerberus::Logger::info, "RobotState = TELEOP");
 }
 void Robot::TeleopPeriodic() {}
 
 void Robot::TestInit() {
-    robotState = RobotState::TESTING;
-    logger::println(logger::info, "RobotState = TESTING");
+    m_robotState = RobotState::TESTING;
+    logger->println(cerberus::Logger::info, "RobotState = TESTING");
 }
 void Robot::TestPeriodic() {
-    input::update();
-    events::update();
-}
-
-double getRobotTime() {
-    return Robot::m_robotTime;
+    inputs->update();
+    events->update();
 }
 
 #ifndef RUNNING_FRC_TESTS

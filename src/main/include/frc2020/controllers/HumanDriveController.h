@@ -1,16 +1,21 @@
 #pragma once
 
 class DriveTrain;
-struct input::Analog;
+
+namespace cerberus {
+struct InputAnalog;
+}  // namespace cerberus
 
 #include <cerberus/Event.h>
 
-class HumanDriveController : public events::Event {
+using namespace cerberus;
+
+class HumanDriveController : public Event {
    private:
     // FIXME: speed and turn axis are flipped in the drivetrain view.
     // FIXME: put definition in constructor.
-    input::Analog drive_speed = input::Analog(0);
-    input::Analog drive_turn = input::Analog(1);
+    InputAnalog drive_speed = InputAnalog(0);
+    InputAnalog drive_turn = InputAnalog(1);
 
     DriveTrain* drivetrain;
 

@@ -1,14 +1,17 @@
 #pragma once
 
 class Shooter;
-struct input::Analog;
+
+namespace cerberus {
+struct InputAnalog;
+}  // namespace cerberus
 
 #include <cerberus/Event.h>
 
-class HumanShooterController : public events::Event {
+class HumanShooterController : public Event {
    private:
-    input::Analog speed_top = input::Analog(2);
-    input::Analog speed_bottom = input::Analog(3);
+    InputAnalog speed_top = InputAnalog(2);
+    InputAnalog speed_bottom = InputAnalog(3);
 
     Shooter* shooter;
 

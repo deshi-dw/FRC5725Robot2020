@@ -6,12 +6,12 @@
 #include <cerberus/Logger.h>
 #include <frc2020/Robot.h>
 
-class EventLogMotion : public events::Event {
+class EventLogMotion : public Event {
    public:
     EventLogMotion();
 
     bool condition() {
-        return robotState == RobotState::TESTING;
+        return Robot::getRobotState() == RobotState::TESTING;
     }
 
     void initialize() {
@@ -23,9 +23,9 @@ class EventLogMotion : public events::Event {
         delete ahrs;
     }
     void update() {
-        if (getRobotTime() - lastPrintTime > 2.0) {
-            logger::println(logger::info, "position(m) {%d,%d}", ahrs->GetDisplacementX(), ahrs->GetDisplacementZ());
-            lastPrintTime = getRobotTime();
+        if (Robot::getRobotTime() - lastPrintTime > 2.0) {
+            Robot::logger->println(cerberus::Logger::info, "position(m) {%d,%d}", ahrs->GetDisplacementX(), ahrs->GetDisplacementZ());
+            lastPrintTime = Robot::getRobotTime();
         }
     }
 
