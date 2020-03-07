@@ -8,6 +8,8 @@
 #define USE_WPILIB_INPUT 1
 #endif
 
+namespace cerberus {
+
 typedef struct DigitalInput {
     int axis;
     bool value;
@@ -33,37 +35,39 @@ typedef struct AnalogInput {
 } AnalogInput;
 
 class InputManager {
-private:
-void applyStepped(AnalogInput* analog) {}
-void applyDeadZone(AnalogInput* analog) {
-    if (abs(analog->value) < analog->deadZone) {
-        analog->value = 0.0f;
+   private:
+    void applyStepped(AnalogInput* analog) {}
+    void applyDeadZone(AnalogInput* analog) {
+        if (abs(analog->value) < analog->deadZone) {
+            analog->value = 0.0f;
+        }
     }
-}
-void applyNormalize(AnalogInput* analog) {
-}
-void applySquared(AnalogInput* analog) {
-    analog->value = analog->value * analog->value;
-}
+    void applyNormalize(AnalogInput* analog) {
+    }
+    void applySquared(AnalogInput* analog) {
+        analog->value = analog->value * analog->value;
+    }
 
 #ifdef USE_WPILIB_INPUT
-frc::Joystick joystick = frc::Joystick(0);
+    frc::Joystick joystick = frc::Joystick(0);
 #endif
 
-std::vector<AnalogInput*> analogs;
-std::vector<DigitalInput*> digitals;
+    std::vector<AnalogInput*> analogs;
+    std::vector<DigitalInput*> digitals;
 
-public:
-void initialize();
-void deinitialize();
-void update();
+   public:
+    void initialize();
+    void deinitialize();
+    void update();
 
-template <typename T>
-void add(T* input);
+    template <typename T>
+    void add(T* input);
 
-template <typename T>
-void remove(T* input);
+    template <typename T>
+    void remove(T* input);
 
-template <typename T>
-T* get(int axis);
+    template <typename T>
+    T* get(int axis);
 };
+
+}  // namespace cerberus

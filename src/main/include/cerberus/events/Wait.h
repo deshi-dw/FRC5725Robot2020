@@ -2,10 +2,14 @@
 
 #include <cerberus/Event.h>
 
-class Wait : public events::Event {
+namespace cerberus {
+
+class Wait : public Event {
    public:
     Wait(long time);
 
    private:
     long time;
 };
+
+}  // namespace cerberus

@@ -3,6 +3,8 @@
 
 #include <typeinfo>
 
+namespace cerberus {
+
 const int EventManager::add(Event* event) {
     if (isUpdating == false) {
         // If the events aren't being updated, add the event to the event list.
@@ -88,3 +90,5 @@ void EventManager::update() {
     }
     afterUpdate.clear();
 }
+
+}  // namespace cerberus

@@ -7,6 +7,8 @@
 #define USE_WPILIB_INPUT 1
 #endif
 
+namespace cerberus {
+
 void InputManager::initialize() {}
 void InputManager::deinitialize() {}
 
@@ -112,3 +114,5 @@ DigitalInput* InputManager::get<DigitalInput>(int axis) {
     // TODO: Log "axis could not be found."
     return nullptr;
 }
+
+}  // namespace cerberus

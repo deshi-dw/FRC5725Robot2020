@@ -6,6 +6,8 @@
 #include <functional>
 #include <vector>
 
+namespace cerberus {
+
 class EventManager {
    private:
     /**
@@ -79,3 +81,5 @@ class EventManager {
  */
     void update();
 };
+
+}  // namespace cerberus
