@@ -1,5 +1,5 @@
 #include <cerberus/Logger.h>
-#include <cerberus/Settings.h>
+#include <cerberus/ConfigManager.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/Shooter.h>
 #include <rev/CANEncoder.h>
@@ -13,8 +13,8 @@ Shooter::~Shooter() {}
 void Shooter::initialize() {
     // cfg::load(settingsPath);
 
-    cfg::get<int>("hardware::motor_right1::pin", pin_top);
-    cfg::get<int>("hardware::motor_right2::pin", pin_bottom);
+    Robot::config->get<int>("hardware::motor_right1::pin", pin_top);
+    Robot::config->get<int>("hardware::motor_right2::pin", pin_bottom);
 
     pin_top = 5;
     pin_bottom = 6;

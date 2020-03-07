@@ -9,6 +9,7 @@
 #include <cerberus/EventManager.h>
 #include <cerberus/Hardware.h>
 #include <cerberus/InputManager.h>
+#include <cerberus/ConfigManager.h>
 #include <cerberus/Logger.h>
 #include <cerberus/Networking.h>
 #include <frc/Joystick.h>
@@ -31,6 +32,9 @@ RobotState Robot::m_robotState = RobotState::BOOTING_UP;
 
 EventManager* Robot::events = new EventManager();
 InputManager* Robot::inputs = new InputManager();
+ConfigManager* Robot::config = new ConfigManager();
+
+cerberus::Logger* Robot::logger = new cerberus::Logger();
 
 RobotState Robot::getRobotState() {
     return m_robotState;
@@ -41,11 +45,10 @@ double Robot::getRobotTime() {
 }
 
 void Robot::RobotInit() {
-    logger = new Logger();
-    logger->println(Logger::info, "Robot Initializing...");
+    logger->println(cerberus::Logger::info, "Robot Initializing...");
     logger->println();
 
-    logger->println(Logger::info, "adding events...");
+    logger->println(cerberus::Logger::info, "adding events...");
 
     events->add(new EventTest());
 
@@ -57,12 +60,12 @@ void Robot::RobotInit() {
     events->add(new HumanShooterController());
     events->add(new HumanIntakeController());
 
-    logger->println(Logger::info, "%u events added.", events->size());
+    logger->println(cerberus::Logger::info, "%u events added.", events->size());
     logger->println();
 
     events->update();
 
-    logger->println(Logger::info, "Robot Initialization Complete.");
+    logger->println(cerberus::Logger::info, "Robot Initialization Complete.");
 }
 
 void Robot::RobotPeriodic() {
@@ -73,26 +76,26 @@ void Robot::RobotPeriodic() {
 void Robot::DisabledInit() {
     m_robotState = RobotState::DISABLED;
 
-    logger->println(Logger::info, "RobotState = DISABLED");
+    logger->println(cerberus::Logger::info, "RobotState = DISABLED");
 }
 
 void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() {
     m_robotState = RobotState::AUTONOMOUS;
-    logger->println(Logger::info, "RobotState = AUTONOMOUS");
+    logger->println(cerberus::Logger::info, "RobotState = AUTONOMOUS");
 }
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
     m_robotState = RobotState::TELEOP;
-    logger->println(Logger::info, "RobotState = TELEOP");
+    logger->println(cerberus::Logger::info, "RobotState = TELEOP");
 }
 void Robot::TeleopPeriodic() {}
 
 void Robot::TestInit() {
     m_robotState = RobotState::TESTING;
-    logger->println(Logger::info, "RobotState = TESTING");
+    logger->println(cerberus::Logger::info, "RobotState = TESTING");
 }
 void Robot::TestPeriodic() {
     inputs->update();

@@ -1,6 +1,6 @@
 #include <cerberus/Hardware.h>
 #include <cerberus/Logger.h>
-#include <cerberus/Settings.h>
+#include <cerberus/ConfigManager.h>
 #include <frc/Spark.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
@@ -15,10 +15,10 @@ DriveTrain::~DriveTrain() {}
 void DriveTrain::initialize() {
     // cfg::load(settingsPath);
 
-    cfg::get<int>("hardware::motor_right1::pin", pin_right1);
-    cfg::get<int>("hardware::motor_right2::pin", pin_right2);
-    cfg::get<int>("hardware::motor_left1::pin", pin_left1);
-    cfg::get<int>("hardware::motor_left2::pin", pin_left2);
+    Robot::config->get<int>("hardware::motor_right1::pin", pin_right1);
+    Robot::config->get<int>("hardware::motor_right2::pin", pin_right2);
+    Robot::config->get<int>("hardware::motor_left1::pin", pin_left1);
+    Robot::config->get<int>("hardware::motor_left2::pin", pin_left2);
 
     pin_right1 = 7;
     // pin_right2 = 2;

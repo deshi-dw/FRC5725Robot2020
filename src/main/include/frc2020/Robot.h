@@ -9,9 +9,14 @@
 
 #include <frc/TimedRobot.h>
 
+namespace cerberus {
 class EventManager;
 class InputManager;
+class ConfigManager;
 class Logger;
+}  // namespace cerberus
+
+using namespace cerberus;
 
 enum RobotState {
     DISABLED,
@@ -41,7 +46,8 @@ class Robot : public frc::TimedRobot {
 
     static EventManager* events;
     static InputManager* inputs;
-    static Logger* logger;
+    static ConfigManager* config;
+    static cerberus::Logger* logger;
 
     static RobotState getRobotState();
     static double getRobotTime();
