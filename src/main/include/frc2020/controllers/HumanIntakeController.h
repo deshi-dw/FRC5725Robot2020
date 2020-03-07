@@ -1,14 +1,19 @@
 #pragma once
 
 class Intake;
-struct DigitalInput;
+
+namespace cerberus {
+struct InputDigital;
+}  // namespace cerberus
 
 #include <cerberus/Event.h>
+
+using namespace cerberus;
 
 class HumanIntakeController : public Event {
    private:
     // FIXME: put definition in constructor.
-    DigitalInput input_toggle = DigitalInput(1);
+    InputDigital input_toggle = InputDigital(1);
 
     Intake* intake;
 

@@ -5,6 +5,8 @@
 #include <frc2020/components/DriveTrain.h>
 #include <frc2020/controllers/HumanDriveController.h>
 
+using namespace cerberus;
+
 HumanDriveController::HumanDriveController() {}
 
 void HumanDriveController::initialize() {
@@ -21,14 +23,14 @@ void HumanDriveController::initialize() {
     // drive_turn.isDeadZoned = true;
     drive_turn.deadZone = 0.15;
 
-    Robot::inputs->add<AnalogInput>(&drive_speed);
-    Robot::inputs->add<AnalogInput>(&drive_turn);
+    Robot::inputs->add<InputAnalog>(&drive_speed);
+    Robot::inputs->add<InputAnalog>(&drive_turn);
 
     Robot::logger->println(Logger::warning, "[HumanDriveController] successfully initialized.");
 }
 void HumanDriveController::deinitialize() {
-    Robot::inputs->remove<AnalogInput>(&drive_speed);
-    Robot::inputs->remove<AnalogInput>(&drive_turn);
+    Robot::inputs->remove<InputAnalog>(&drive_speed);
+    Robot::inputs->remove<InputAnalog>(&drive_turn);
 
     Robot::logger->println(Logger::warning, "[HumanDriveController] successfully deinitialized.");
 }

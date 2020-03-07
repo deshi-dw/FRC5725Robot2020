@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+using namespace cerberus;
+
 HumanShooterController::HumanShooterController() {}
 
 void HumanShooterController::initialize() {
@@ -17,15 +19,15 @@ void HumanShooterController::initialize() {
         Robot::logger->println(Logger::warning, "[HumanShooterController] failed to initialize.");
     }
 
-    Robot::inputs->add<AnalogInput>(&speed_top);
-    Robot::inputs->add<AnalogInput>(&speed_bottom);
+    Robot::inputs->add<InputAnalog>(&speed_top);
+    Robot::inputs->add<InputAnalog>(&speed_bottom);
 
     Robot::logger->println(Logger::warning, "[HumanShooterController] successfully initialized.");
 }
 
 void HumanShooterController::deinitialize() {
-    Robot::inputs->remove<AnalogInput>(&speed_top);
-    Robot::inputs->remove<AnalogInput>(&speed_bottom);
+    Robot::inputs->remove<InputAnalog>(&speed_top);
+    Robot::inputs->remove<InputAnalog>(&speed_bottom);
 
     Robot::logger->println(Logger::warning, "[HumanShooterController] successfully deinitialized.");
 }

@@ -10,15 +10,15 @@
 
 namespace cerberus {
 
-typedef struct DigitalInput {
+typedef struct InputDigital {
     int axis;
     bool value;
 
-    DigitalInput(int axis) : axis(axis) {}
-} DigitalInput;
+    InputDigital(int axis) : axis(axis) {}
+} InputDigital;
 
 // TODO: Add multiplier atribute.
-typedef struct AnalogInput {
+typedef struct InputAnalog {
     int axis = 0;
     double value = 0;
     double range[2] = {-1.0, 1.0};
@@ -31,20 +31,20 @@ typedef struct AnalogInput {
     std::vector<double> steps;
     double deadZone = 0.01;
 
-    AnalogInput(int axis) : axis(axis) {}
-} AnalogInput;
+    InputAnalog(int axis) : axis(axis) {}
+} InputAnalog;
 
 class InputManager {
    private:
-    void applyStepped(AnalogInput* analog) {}
-    void applyDeadZone(AnalogInput* analog) {
+    void applyStepped(InputAnalog* analog) {}
+    void applyDeadZone(InputAnalog* analog) {
         if (abs(analog->value) < analog->deadZone) {
             analog->value = 0.0f;
         }
     }
-    void applyNormalize(AnalogInput* analog) {
+    void applyNormalize(InputAnalog* analog) {
     }
-    void applySquared(AnalogInput* analog) {
+    void applySquared(InputAnalog* analog) {
         analog->value = analog->value * analog->value;
     }
 
@@ -52,8 +52,8 @@ class InputManager {
     frc::Joystick joystick = frc::Joystick(0);
 #endif
 
-    std::vector<AnalogInput*> analogs;
-    std::vector<DigitalInput*> digitals;
+    std::vector<InputAnalog*> analogs;
+    std::vector<InputDigital*> digitals;
 
    public:
     void initialize();

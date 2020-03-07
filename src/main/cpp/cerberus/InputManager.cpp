@@ -46,12 +46,12 @@ void InputManager::add(T* input) {
 }
 
 template <>
-void InputManager::add<AnalogInput>(AnalogInput* input) {
+void InputManager::add<InputAnalog>(InputAnalog* input) {
     analogs.push_back(input);
 }
 
 template <>
-void InputManager::add<DigitalInput>(DigitalInput* input) {
+void InputManager::add<InputDigital>(InputDigital* input) {
     digitals.push_back(input);
 }
 
@@ -61,7 +61,7 @@ void InputManager::remove(T* input) {
 }
 
 template <>
-void InputManager::remove<AnalogInput>(AnalogInput* input) {
+void InputManager::remove<InputAnalog>(InputAnalog* input) {
     for (size_t i = 0; i < analogs.size(); i++) {
         if (analogs[i] == input) {
             analogs.erase(analogs.begin() + i);
@@ -74,7 +74,7 @@ void InputManager::remove<AnalogInput>(AnalogInput* input) {
 }
 
 template <>
-void InputManager::remove<DigitalInput>(DigitalInput* input) {
+void InputManager::remove<InputDigital>(InputDigital* input) {
     for (size_t i = 0; i < digitals.size(); i++) {
         if (digitals[i] == input) {
             digitals.erase(digitals.begin() + i);
@@ -92,7 +92,7 @@ T* InputManager::get(int axis) {
 }
 
 template <>
-AnalogInput* InputManager::get<AnalogInput>(int axis) {
+InputAnalog* InputManager::get<InputAnalog>(int axis) {
     for (size_t i = 0; i < analogs.size(); i++) {
         if (analogs[i]->axis == axis) {
             return analogs[i];
@@ -104,7 +104,7 @@ AnalogInput* InputManager::get<AnalogInput>(int axis) {
 }
 
 template <>
-DigitalInput* InputManager::get<DigitalInput>(int axis) {
+InputDigital* InputManager::get<InputDigital>(int axis) {
     for (size_t i = 0; i < digitals.size(); i++) {
         if (digitals[i]->axis == axis) {
             return digitals[i];

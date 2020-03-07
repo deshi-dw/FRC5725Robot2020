@@ -23,7 +23,7 @@ class EventLogMotion : public Event {
     }
     void update() {
         if (Robot::getRobotTime() - lastPrintTime > 2.0) {
-            Robot::logger->println(Logger::info, "position(m) {%d,%d}", ahrs->GetDisplacementX(), ahrs->GetDisplacementZ());
+            Robot::logger->println(cerberus::Logger::info, "position(m) {%d,%d}", ahrs->GetDisplacementX(), ahrs->GetDisplacementZ());
             lastPrintTime = Robot::getRobotTime();
         }
     }

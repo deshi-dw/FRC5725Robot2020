@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+using namespace cerberus;
+
 HumanIntakeController::HumanIntakeController() {}
 
 void HumanIntakeController::initialize() {
@@ -17,13 +19,13 @@ void HumanIntakeController::initialize() {
         Robot::logger->println(Logger::warning, "[HumanIntakeController] failed to initialize.");
     }
 
-    Robot::inputs->add<DigitalInput>(&input_toggle);
+    Robot::inputs->add<InputDigital>(&input_toggle);
 
     Robot::logger->println(Logger::warning, "[HumanIntakeController] successfully initialized.");
 }
 
 void HumanIntakeController::deinitialize() {
-    Robot::inputs->remove<DigitalInput>(&input_toggle);
+    Robot::inputs->remove<InputDigital>(&input_toggle);
 
     Robot::logger->println(Logger::warning, "[HumanIntakeController] successfully deinitialized.");
 }
