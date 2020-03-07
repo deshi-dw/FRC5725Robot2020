@@ -25,7 +25,7 @@ void Shooter::initialize() {
     encoder_top = new rev::CANEncoder(*motor_top, rev::CANEncoder::EncoderType::kHallSensor, 0);
     encoder_bottom = new rev::CANEncoder(*motor_bottom, rev::CANEncoder::EncoderType::kHallSensor, 0);
 
-    logger::println(logger::info, "[Shooter] successfully initialized.");
+    Robot::logger->println(Logger::info, "[Shooter] successfully initialized.");
 }
 
 void Shooter::deinitialize() {

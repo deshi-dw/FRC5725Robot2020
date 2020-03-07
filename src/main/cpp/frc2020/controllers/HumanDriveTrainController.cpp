@@ -11,8 +11,8 @@ void HumanDriveController::initialize() {
     drivetrain = (DriveTrain*)Robot::events->get(typeid(DriveTrain));
 
     if (drivetrain == nullptr) {
-        logger::println(logger::error, "[HumanDriveController] failed to get the drivetrain event.");
-        logger::println(logger::warning, "[HumanDriveController] failed to initialize.");
+        Robot::logger->println(Logger::error, "[HumanDriveController] failed to get the drivetrain event.");
+        Robot::logger->println(Logger::warning, "[HumanDriveController] failed to initialize.");
     }
 
     // drive_speed.isDeadZoned = true;
@@ -24,13 +24,13 @@ void HumanDriveController::initialize() {
     Robot::inputs->add<AnalogInput>(&drive_speed);
     Robot::inputs->add<AnalogInput>(&drive_turn);
 
-    logger::println(logger::warning, "[HumanDriveController] successfully initialized.");
+    Robot::logger->println(Logger::warning, "[HumanDriveController] successfully initialized.");
 }
 void HumanDriveController::deinitialize() {
     Robot::inputs->remove<AnalogInput>(&drive_speed);
     Robot::inputs->remove<AnalogInput>(&drive_turn);
 
-    logger::println(logger::warning, "[HumanDriveController] successfully deinitialized.");
+    Robot::logger->println(Logger::warning, "[HumanDriveController] successfully deinitialized.");
 }
 
 void HumanDriveController::update() {

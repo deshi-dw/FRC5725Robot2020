@@ -13,21 +13,21 @@ void HumanShooterController::initialize() {
     shooter = (Shooter*)Robot::events->get(typeid(Shooter));
 
     if (shooter == nullptr) {
-        logger::println(logger::error, "[HumanShooterController] failed to get the intake event.");
-        logger::println(logger::warning, "[HumanShooterController] failed to initialize.");
+        Robot::logger->println(Logger::error, "[HumanShooterController] failed to get the intake event.");
+        Robot::logger->println(Logger::warning, "[HumanShooterController] failed to initialize.");
     }
 
     Robot::inputs->add<AnalogInput>(&speed_top);
     Robot::inputs->add<AnalogInput>(&speed_bottom);
 
-    logger::println(logger::warning, "[HumanShooterController] successfully initialized.");
+    Robot::logger->println(Logger::warning, "[HumanShooterController] successfully initialized.");
 }
 
 void HumanShooterController::deinitialize() {
     Robot::inputs->remove<AnalogInput>(&speed_top);
     Robot::inputs->remove<AnalogInput>(&speed_bottom);
 
-    logger::println(logger::warning, "[HumanShooterController] successfully deinitialized.");
+    Robot::logger->println(Logger::warning, "[HumanShooterController] successfully deinitialized.");
 }
 
 void HumanShooterController::update() {

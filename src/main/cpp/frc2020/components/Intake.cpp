@@ -19,7 +19,7 @@ void Intake::initialize() {
 
     motor = new frc::Spark(channel);
 
-    logger::println(logger::info, "[Intake] successfully initialized.");
+    Robot::logger->println(Logger::info, "[Intake] successfully initialized.");
 }
 
 void Intake::deinitialize() {

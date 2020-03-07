@@ -11,6 +11,7 @@
 
 class EventManager;
 class InputManager;
+class Logger;
 
 enum RobotState {
     DISABLED,
@@ -40,6 +41,7 @@ class Robot : public frc::TimedRobot {
 
     static EventManager* events;
     static InputManager* inputs;
+    static Logger* logger;
 
     static RobotState getRobotState();
     static double getRobotTime();

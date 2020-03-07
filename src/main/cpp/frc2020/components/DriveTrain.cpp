@@ -30,7 +30,7 @@ void DriveTrain::initialize() {
     motor_left1 = new frc::Spark(pin_left1);
     motor_left2 = new frc::Spark(pin_left2);
 
-    logger::println(logger::info, "[DriveTrain] successfully initialized.");
+    Robot::logger->println(Logger::info, "[DriveTrain] successfully initialized.");
 }
 
 void DriveTrain::deinitialize() {

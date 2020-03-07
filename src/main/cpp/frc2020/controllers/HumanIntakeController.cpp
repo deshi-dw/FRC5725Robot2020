@@ -13,19 +13,19 @@ void HumanIntakeController::initialize() {
     intake = (Intake*)Robot::events->get(typeid(Intake));
 
     if (intake == nullptr) {
-        logger::println(logger::error, "[HumanIntakeController] failed to get the intake event.");
-        logger::println(logger::warning, "[HumanIntakeController] failed to initialize.");
+        Robot::logger->println(Logger::error, "[HumanIntakeController] failed to get the intake event.");
+        Robot::logger->println(Logger::warning, "[HumanIntakeController] failed to initialize.");
     }
 
     Robot::inputs->add<DigitalInput>(&input_toggle);
 
-    logger::println(logger::warning, "[HumanIntakeController] successfully initialized.");
+    Robot::logger->println(Logger::warning, "[HumanIntakeController] successfully initialized.");
 }
 
 void HumanIntakeController::deinitialize() {
     Robot::inputs->remove<DigitalInput>(&input_toggle);
 
-    logger::println(logger::warning, "[HumanIntakeController] successfully deinitialized.");
+    Robot::logger->println(Logger::warning, "[HumanIntakeController] successfully deinitialized.");
 }
 
 void HumanIntakeController::update() {
