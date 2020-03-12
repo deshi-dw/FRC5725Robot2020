@@ -34,10 +34,10 @@ void DriveTrain::initialize() {
 }
 
 void DriveTrain::deinitialize() {
-    delete motor_right1;
-    delete motor_right2;
-    delete motor_left1;
-    delete motor_left2;
+	delete motor_right1;
+	delete motor_right2;
+	delete motor_left1;
+	delete motor_left2;
 }
 
 void DriveTrain::driveArcade(const double& speed, const double& turn) {
@@ -51,6 +51,8 @@ void DriveTrain::driveTank(const double& right, const double& left) {
 
     motor_left1->SetSpeed(left);
     motor_left2->SetSpeed(left);
+
+    std::cout << "drive " << right << ", " << left << std::endl;
 }
 
 void DriveTrain::update() {}

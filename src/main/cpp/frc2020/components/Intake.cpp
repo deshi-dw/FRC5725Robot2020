@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cerberus/Hardware.h>
 #include <cerberus/Logger.h>
 #include <cerberus/ConfigManager.h>
 #include <frc/Spark.h>
