@@ -17,7 +17,8 @@ typedef struct InputDigital {
     InputDigital(int axis) : axis(axis) {}
 } InputDigital;
 
-// TODO: Add multiplier atribute.
+// @todo add a multiplier atriube to InputAnalog
+// @body There should be a way to add multipliers directly to an analog input.
 typedef struct InputAnalog {
     int axis = 0;
     double value = 0;

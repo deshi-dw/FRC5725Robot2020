@@ -1,6 +1,6 @@
+#include <cerberus/ConfigManager.h>
 #include <cerberus/Hardware.h>
 #include <cerberus/Logger.h>
-#include <cerberus/ConfigManager.h>
 #include <frc/Spark.h>
 #include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
@@ -34,10 +34,10 @@ void DriveTrain::initialize() {
 }
 
 void DriveTrain::deinitialize() {
-	delete motor_right1;
-	delete motor_right2;
-	delete motor_left1;
-	delete motor_left2;
+    delete motor_right1;
+    delete motor_right2;
+    delete motor_left1;
+    delete motor_left2;
 }
 
 void DriveTrain::driveArcade(const double& speed, const double& turn) {
@@ -45,7 +45,8 @@ void DriveTrain::driveArcade(const double& speed, const double& turn) {
 }
 
 void DriveTrain::driveTank(const double& right, const double& left) {
-    // TODO: Make right and left speed class variables so they can be manipulateed outside of driveTank.
+    // @todo make right and left speed class variables
+    // @body If the right and left speed variables were stored outside of DriveTrain::driveTank, they could be manipulated by other DriveTrain functions for more fine control.
     motor_right1->SetSpeed(right);
     motor_right2->SetSpeed(right);
 

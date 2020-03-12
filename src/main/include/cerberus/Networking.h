@@ -14,16 +14,22 @@
 #include <unistd.h>
 #endif
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include <thread>
 #include <vector>
-#include <string.h>
 
 #ifndef NET_BUFFER_SIZE
 #define NET_BUFFER_SIZE 1024
 #endif
 
+// @todo net namespace lacks proper logging and error checking
+// @body The net namespace currently uses `printf` which is incorrect with the addition of the Logger class. Replace all instances with: ```Robot::logger->println("message");```
+
+// @todo replace the net namespace with a NetworkManager class
+// @body To keep in line with better c++ practice, all namespaces have been replaced with classes. The net namespace however hasn't yet got that treatment.
 namespace net {
 namespace {
 int sock_tcp = -1;
@@ -41,25 +47,24 @@ bool isActive = false;
 bool isUpdating = false;
 
 #ifdef _WIN32
-	WSADATA wsaData;
+WSADATA wsaData;
 #endif
 }  // namespace
 
 void networkingThread();
 void listenerThread();
 
-
 void initialize() {
-	#ifdef _WIN32
-	WSADATA wsaData;
-	
-	if(WSAStartup(MAKEWORD(2,2), &wsaData) != NO_ERROR) {
+#ifdef _WIN32
+    WSADATA wsaData;
+
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != NO_ERROR) {
         printf("failed to initialize network code.\n");
         // TODO: Proper logging.
         // TODO: error check.
-		return;
-	}
-	#endif
+        return;
+    }
+#endif
 
     // Create a tcp socket descriptor.
     if ((sock_tcp = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -77,13 +82,13 @@ void initialize() {
 
     // configure the tcp socket properties.
     // see: https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-setsockopt for details.
-	#ifndef _WIN32
+#ifndef _WIN32
     int option = 1;
     if (setsockopt(sock_tcp, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &option, sizeof(option)) < 0) {
-	#else
-	const char option = 1;
-	if (setsockopt(sock_tcp, SOL_SOCKET, SO_REUSEADDR | SO_REUSE_UNICASTPORT, &option, sizeof(option)) != 0) {
-	#endif
+#else
+    const char option = 1;
+    if (setsockopt(sock_tcp, SOL_SOCKET, SO_REUSEADDR | SO_REUSE_UNICASTPORT, &option, sizeof(option)) != 0) {
+#endif
         // TODO: Proper logging.
         // TODO: error check.
         printf("could not configure the tcp socket.\n");
@@ -118,16 +123,17 @@ void deinitialize() {
 void update() {}
 
 void networkingThread() {
-	while (isActive == false);
+    while (isActive == false)
+        ;
 
     while (isActive) {
-		// FIXME: handle when a connection is closed.
+        // FIXME: handle when a connection is closed.
         for (int i = sock_clients.size() - 1; i >= 0; i--) {
-			#ifndef _WIN32
+#ifndef _WIN32
             if (read(sock_clients[i], buff_clients[i], NET_BUFFER_SIZE) < 0) {
-			#else
+#else
             if (recv(sock_clients[i], buff_clients[i], NET_BUFFER_SIZE, 0) < MSG_OOB) {
-			#endif
+#endif
                 // TODO: Proper logging.
                 // TODO: error check.
                 printf("failed to read from tcp socket at index %i.\n", i);
@@ -135,20 +141,21 @@ void networkingThread() {
                 return;
             }
 
-			// FIXME: make a more perminate solution for storing client data.
-			if(buff_clients[i] != nullptr) {
-				struct sockaddr_in client_address;
-				socklen_t client_address_len = sizeof(client_address);
-				getpeername(sock_clients[i], (struct sockaddr*)&client_address, &client_address_len);
-				printf("[%s:%d] %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buff_clients[i]);
-			}
+            // FIXME: make a more perminate solution for storing client data.
+            if (buff_clients[i] != nullptr) {
+                struct sockaddr_in client_address;
+                socklen_t client_address_len = sizeof(client_address);
+                getpeername(sock_clients[i], (struct sockaddr*)&client_address, &client_address_len);
+                printf("[%s:%d] %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buff_clients[i]);
+            }
         }
     }
 }
 
 void listenerThread() {
-	while (isActive == false);
-	
+    while (isActive == false)
+        ;
+
     while (isActive) {
         // listen for tcp clients trying to connect.
         if (listen(sock_tcp, 3) < 0) {
