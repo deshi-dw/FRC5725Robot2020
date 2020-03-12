@@ -1,12 +1,13 @@
-#include <cerberus/Settings.h>
+#include <cerberus/ConfigManager.h>
+#include <string.h>
 #include <util/Files.h>
 
-#include <string.h>
 #include <string>
 #include <vector>
 
-namespace cfg {
-void load(const std::string path) {
+namespace cerberus {
+
+void ConfigManager::load(const std::string path) {
     std::string data = files::readFile(path);
     parse(data, std::string(), 0, data.size());
 }
@@ -14,63 +15,7 @@ void load(const std::string path) {
 void unloadAll() {
 }
 
-template <typename T>
-const bool get(std::string setting, T& value) {
-    if (settings[setting] != nullptr) {
-        value = *(T*)settings[setting];
-        return true;
-    }
-
-    return false;
-}
-
-template <>
-const bool get<bool>(std::string setting, bool& value) {
-    if (settings[setting] != nullptr) {
-        value = *(bool*)settings[setting];
-        return true;
-    }
-
-    return false;
-}
-
-template <>
-const bool get<int>(std::string setting, int& value) {
-    if (settings[setting] != nullptr) {
-        value = *(int*)settings[setting];
-        return true;
-    }
-
-    return false;
-}
-
-template <>
-const bool get<double>(std::string setting, double& value) {
-    if (settings[setting] != nullptr) {
-        value = *(double*)settings[setting];
-        return true;
-    }
-
-    return false;
-}
-
-template <>
-const bool get<std::string>(std::string setting, std::string& value) {
-    if (settings[setting] != nullptr) {
-        value = *(std::string*)settings[setting];
-        return true;
-    }
-
-    return false;
-}
-
-template <typename T>
-const int getArray(std::string setting, T* value) {
-	value = *(T*)settings[setting]+1;
-    return *(int*)settings[setting]+0;
-}
-
-int parse(const std::string& data, const std::string& parent, int start, int end) {
+int ConfigManager::parse(const std::string& data, const std::string& parent, int start, int end) {
     for (int i = start; i < end; i++) {
         if (data[i] == '{') {
             std::string name = getName(data, i - 1);
@@ -96,7 +41,7 @@ int parse(const std::string& data, const std::string& parent, int start, int end
     return end + 1;
 }
 
-void* parseValue(const std::string& svalue) {
+void* ConfigManager::parseValue(const std::string& svalue) {
     void* value = nullptr;
 
     // cout << name << " = ";
@@ -109,15 +54,15 @@ void* parseValue(const std::string& svalue) {
         int objectCount = getObjectCount(svalue, start);
 
         value = malloc((objectCount + 1) * sizeof(void*));
-		memset(value, objectCount, 1);
-		int count = 1;
+        memset(value, objectCount, 1);
+        int count = 1;
 
         for (size_t i = start; i < svalue.size(); i++) {
             if (svalue[i] == ',' || svalue[i] == ']') {
                 // (*(vector<void*>*)value).push_back(parseValue(svalue.substr(start, i - start)));
-				((void**)value)[count] = (void*) parseValue(svalue.substr(start, i - start));
+                ((void**)value)[count] = (void*)parseValue(svalue.substr(start, i - start));
                 start = i + 1;
-				count++;
+                count++;
             }
         }
     } else if (svalue[0] == 't') {
@@ -143,11 +88,11 @@ void* parseValue(const std::string& svalue) {
     return value;
 }
 
-bool isDelimiter(const char& c) {
+bool ConfigManager::isDelimiter(const char& c) {
     return c == ',' || c == ':' || c == '{' || c == '}';
 }
 
-int getEndBracket(const std::string& data, int start) {
+int ConfigManager::getEndBracket(const std::string& data, int start) {
     int depth = 1;
 
     for (size_t i = start; i < data.size(); i++) {
@@ -165,7 +110,7 @@ int getEndBracket(const std::string& data, int start) {
     return start;
 }
 
-int getObjectCount(const std::string& data, int start) {
+int ConfigManager::getObjectCount(const std::string& data, int start) {
     int depth = 0;
     int objectCount = 1;
 
@@ -173,9 +118,9 @@ int getObjectCount(const std::string& data, int start) {
         if (data[i] == ']') {
             depth--;
 
-			if(depth == -1) {
-				return objectCount;
-			}
+            if (depth == -1) {
+                return objectCount;
+            }
 
         } else if (data[i] == '[') {
             depth++;
@@ -187,7 +132,7 @@ int getObjectCount(const std::string& data, int start) {
     return start;
 }
 
-std::string getName(const std::string& data, int start) {
+std::string ConfigManager::getName(const std::string& data, int start) {
     for (int i = start; i >= 0; i--) {
         if (isDelimiter(data[i]) == true) {
             if (i == start) {
@@ -207,7 +152,7 @@ std::string getName(const std::string& data, int start) {
     return std::string();
 }
 
-std::string getValue(const std::string& data, int start) {
+std::string ConfigManager::getValue(const std::string& data, int start) {
     bool isstring = false;
     int arrayLevel = 0;
     for (size_t i = start; i < data.size(); i++) {
@@ -228,4 +173,5 @@ std::string getValue(const std::string& data, int start) {
 
     return std::string();
 }
-}  // namespace cfg
+
+}  // namespace cerberus

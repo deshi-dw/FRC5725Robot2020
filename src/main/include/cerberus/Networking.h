@@ -1,196 +1,189 @@
 #pragma once
 
-// #include <netinet/tcp.h>
-#include <stdlib.h>
-#include <wpi/Logger.h>
-#include <wpi/NetworkStream.h>
-#include <wpi/TCPAcceptor.h>
-#include <wpi/TCPStream.h>
-#include <wpi/UDPClient.h>
+// #define _WIN32
 
-#include <string>
+#ifdef _WIN32
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include <WinSock2.h>
+#include <Ws2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
+#else
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#endif
+
+#include <stdlib.h>
+#include <stdio.h>
 #include <thread>
 #include <vector>
+#include <string.h>
 
-using namespace std;
-using namespace wpi;
-
-#define MAX_BUFFER_LENGTH 65536
+#ifndef NET_BUFFER_SIZE
+#define NET_BUFFER_SIZE 1024
+#endif
 
 namespace net {
-// TODO: add UDP support.
-
-// TODO: remove this line when moving to a .cpp file.
-void acceptNewClients();
-void clearAllBuffers();
-
-static vector<char*> buffers;
-
 namespace {
-vector<unique_ptr<NetworkStream>> clients;
+int sock_tcp = -1;
+int sock_udp = -1;
 
-Logger logger = Logger();
-wpi::TCPAcceptor* tcp;
-int robot_port = 6666;
-// char robot_ip[] = "127.0.0.1";
-char robot_ip[] = "";
+std::vector<int> sock_clients;
+std::vector<char*> buff_clients;
 
-bool shouldRepalceDuplicateIps = false;
+struct sockaddr_in tcp_address;
+
+std::thread thread_networking;
+std::thread thread_listener;
+
+bool isActive = false;
 bool isUpdating = false;
-bool isNetworkActive = false;
 
-NetworkStream::Error lastError;
-
-std::thread net_thread;
+#ifdef _WIN32
+	WSADATA wsaData;
+#endif
 }  // namespace
 
+void networkingThread();
+void listenerThread();
+
+
 void initialize() {
-    net_thread = std::thread(acceptNewClients);
-}
+	#ifdef _WIN32
+	WSADATA wsaData;
+	
+	if(WSAStartup(MAKEWORD(2,2), &wsaData) != NO_ERROR) {
+        printf("failed to initialize network code.\n");
+        // TODO: Proper logging.
+        // TODO: error check.
+		return;
+	}
+	#endif
 
-void deinitialize() {
-	net_thread.join();
-    tcp->shutdown();
-    delete tcp;
-}
-
-void update() {
-    isUpdating = true;
-
-    for (int i = 0; i < buffers.size(); i++) {
-        memset(buffers[i], 0, MAX_BUFFER_LENGTH);
-        size_t len = clients[i]->receive((char*)buffers[i], MAX_BUFFER_LENGTH, &lastError, 0);
+    // Create a tcp socket descriptor.
+    if ((sock_tcp = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+        printf("failed to create a tcp socket.\n");
+        // TODO: Proper logging.
+        // TODO: error check.
     }
 
-    isUpdating = false;
-}
-
-int size() {
-    return clients.size();
-}
-
-NetworkStream::Error GetLastError() {
-    return lastError;
-}
-
-void* read(const char* ip) {
-    for (std::size_t i = 0; i < clients.size(); i++) {
-        if (clients[i]->getPeerIP().data() == ip) {
-            return buffers[i];
-        }
+    // Create a udp socket descriptor.
+    if ((sock_udp = socket(AF_INET, SOCK_DGRAM, 0)) == 0) {
+        printf("failed to create a udp socket.\n");
+        // TODO: Proper logging.
+        // TODO: error check.
     }
 
-    return nullptr;
-}
-
-int write(const char* ip, char* data, int length) {
-    for (std::size_t i = 0; i < clients.size(); i++) {
-        if (clients[i]->getPeerIP().data() == ip) {
-            return clients[i]->send(data, length, &lastError);
-        }
-    }
-
-    return -1;
-}
-
-int write(int index, char* data, int length) {
-    return clients[index]->send(data, length, &lastError);
-}
-
-void close(const char* ip) {
-    for (std::size_t i = 0; i < clients.size(); i++) {
-        if (clients[i]->getPeerIP().data() == ip) {
-            clients[i]->close();
-            clients[i].release();
-            clients.erase(clients.begin() + i);
-
-            free(buffers[i]);
-            buffers.erase(buffers.begin() + i);
-
-            // TODO: Log that the client was closed.
-            return;
-        }
-    }
-
-    // TODO: Log that no client was closed.
-}
-
-void closeAll() {
-    for (std::size_t i = 0; i < clients.size(); i++) {
-        clients[i]->close();
-        clients[i].release();
-
-        free(buffers[i]);
-    }
-
-    clients.clear();
-    buffers.clear();
-
-    // TODO: Log that all clients have been closed.
-}
-
-void acceptNewClients() {
-	printf("Initializing networking system...\n");
-    // tcp = new TCPAcceptor(robot_port, robot_ip, logger);
-    // tcp = new TCPAcceptor(5800, "127.0.0.1", logger);
-    tcp = new wpi::TCPAcceptor(6666, "127.0.0.1", logger);
-    if (tcp->start() != 0) {
-        printf("failed to initialize networking system.\n");
+    // configure the tcp socket properties.
+    // see: https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-setsockopt for details.
+	#ifndef _WIN32
+    int option = 1;
+    if (setsockopt(sock_tcp, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &option, sizeof(option)) < 0) {
+	#else
+	const char option = 1;
+	if (setsockopt(sock_tcp, SOL_SOCKET, SO_REUSEADDR | SO_REUSE_UNICASTPORT, &option, sizeof(option)) != 0) {
+	#endif
+        // TODO: Proper logging.
+        // TODO: error check.
+        printf("could not configure the tcp socket.\n");
         return;
     }
-    // tcp->accept();
-	isNetworkActive = true;
-	// net_thread = std::thread(acceptNewClients);
-    printf("The networking system has been initialized.\n");
 
-    while (isNetworkActive == true) {
-        auto c = tcp->accept();
-        // unique_ptr<NetworkStream> client = tcp->accept();
+    // bind the tcp socket to the specifed port.
+    tcp_address.sin_family = AF_INET;
+    tcp_address.sin_addr.s_addr = INADDR_ANY;
+    tcp_address.sin_port = htons(6666);
 
-        unique_ptr<NetworkStream> client;
+    if (::bind(sock_tcp, (struct sockaddr*)&tcp_address, sizeof(tcp_address)) < 0) {
+        // TODO: Proper logging.
+        // TODO: error check.
+        printf("failed to bind the tcp socket to port 6666.\n");
+        return;
+    }
 
-        if (client != nullptr) {
-			while(isUpdating == true);
+    // Run the listener and main networking thread loops.
+    isActive = true;
 
-            bool isInClientList = false;
+    thread_listener = std::thread(listenerThread);
+    thread_networking = std::thread(networkingThread);
+}
+void deinitialize() {
+    isActive = false;
 
-            for (std::size_t i = 0; i < clients.size(); i++) {
-                if (clients[i]->getPeerIP().data() == client->getPeerIP().data()) {
-                    isInClientList = true;
-                    if (shouldRepalceDuplicateIps == true) {
-                        clients[i]->close();
+    thread_networking.join();
+    thread_listener.join();
+}
 
-                        clients.erase(clients.begin() + i);
-                        free(buffers[i]);
-                        buffers.erase(buffers.begin() + i);
+void update() {}
 
-                        clients.push_back(std::move(client));
-                        buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
-                        // TODO: Validate size by making sure clients.size() == buffers.size();
+void networkingThread() {
+	while (isActive == false);
 
-                        // TODO: Log that client has been replaced.
-                        break;
-                    }
-                }
+    while (isActive) {
+		// FIXME: handle when a connection is closed.
+        for (int i = sock_clients.size() - 1; i >= 0; i--) {
+			#ifndef _WIN32
+            if (read(sock_clients[i], buff_clients[i], NET_BUFFER_SIZE) < 0) {
+			#else
+            if (recv(sock_clients[i], buff_clients[i], NET_BUFFER_SIZE, 0) < MSG_OOB) {
+			#endif
+                // TODO: Proper logging.
+                // TODO: error check.
+                printf("failed to read from tcp socket at index %i.\n", i);
+                isActive = false;
+                return;
             }
 
-            if (isInClientList == false) {
-                clients.push_back(std::move(client));
-                buffers.push_back((char*)malloc(MAX_BUFFER_LENGTH));
-                // TODO: Validate size by making sure clients.size() == buffers.size();
-
-                // TODO: Log that client has been added.
-            }
+			// FIXME: make a more perminate solution for storing client data.
+			if(buff_clients[i] != nullptr) {
+				struct sockaddr_in client_address;
+				socklen_t client_address_len = sizeof(client_address);
+				getpeername(sock_clients[i], (struct sockaddr*)&client_address, &client_address_len);
+				printf("[%s:%d] %s\n", inet_ntoa(client_address.sin_addr), ntohs(client_address.sin_port), buff_clients[i]);
+			}
         }
     }
 }
 
-const char* getRobotIp() {
-    return robot_ip;
-}
+void listenerThread() {
+	while (isActive == false);
+	
+    while (isActive) {
+        // listen for tcp clients trying to connect.
+        if (listen(sock_tcp, 3) < 0) {
+            // TODO: Proper logging.
+            // TODO: error check.
+            printf("failed to listen on tcp socket.\n");
+            isActive = false;
+            return;
+        }
 
-int getRobotPort() {
-    return robot_port;
+        // Accept the tcp client into a new socket.
+        int sock_client;
+        if ((sock_client = accept(sock_tcp, (struct sockaddr*)&tcp_address, (socklen_t*)&tcp_address)) < 0) {
+            // TODO: Proper logging.
+            // TODO: error check.
+            printf("failed to accept an incomming tcp socket.\n");
+            isActive = false;
+            return;
+        }
+
+        // Allocate a buffer for the client.
+        buff_clients.push_back((char*)malloc(NET_BUFFER_SIZE));
+
+        if (buff_clients[buff_clients.size() - 1] == nullptr) {
+            // TODO: Proper logging.
+            // TODO: error check.
+            printf("failed to allocate buffer memory for new client.\n");
+            buff_clients.pop_back();
+            isActive = false;
+            return;
+        }
+
+        // Add socket to socket vector.
+        sock_clients.push_back(sock_client);
+    }
 }
 
 }  // namespace net

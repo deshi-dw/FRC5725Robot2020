@@ -1,41 +1,28 @@
 #pragma once
 
-#include <util/RobotState.h>
-#include <cerberus/Component.h>
-#include <cerberus/Inputs.h>
-#include <frc2020/components/Shooter.h>
+class Shooter;
 
-namespace frc2020 {
-class HumanShooterController : public Component {
-    private:
-    input::Analog speed_top = input::Analog(2);
-    input::Analog speed_bottom = input::Analog(3);
+namespace cerberus {
+struct InputAnalog;
+}  // namespace cerberus
 
-	frc2020::Shooter& shooter;
+#include <cerberus/Event.h>
 
-    public:
-	HumanShooterController(frc2020::Shooter& shooter) : shooter(shooter) {}
+class HumanShooterController : public Event {
+   private:
+    InputAnalog speed_top = InputAnalog(2);
+    InputAnalog speed_bottom = InputAnalog(3);
 
-    void initialize() {
-        input::add<input::Analog>(&speed_top);
-        input::add<input::Analog>(&speed_bottom);
+    Shooter* shooter;
 
-        std::cout << "HumanShooterController initialized." << std::endl;
-    }
+   public:
+    HumanShooterController();
 
-    void deinitialize() {
-        input::remove<input::Analog>(&speed_top);
-        input::remove<input::Analog>(&speed_bottom);
+    void initialize();
 
-        m_isInitialized = false;
-    }
+    void deinitialize();
 
-    void update() {
-		shooter.shoot(speed_top.value * 0.4, speed_bottom.value * 0.4);
-    }
+    void update();
 
-	bool updateCondition() {
-		return c_robotState == RobotState::TELEOP || c_robotState == RobotState::TESTING;
-	}
+    bool condition();
 };
-}

@@ -1,47 +1,35 @@
 #pragma once
 
-#include <cerberus/Component.h>
-#include <cerberus/Inputs.h>
-#include <frc2020/components/DriveTrain.h>
-#include <stdio.h>
-#include <util/RobotState.h>
+class DriveTrain;
 
-namespace frc2020 {
-class HumanDriveController : public Component {
+namespace cerberus {
+struct InputAnalog;
+}  // namespace cerberus
+
+#include <cerberus/Event.h>
+
+using namespace cerberus;
+
+class HumanDriveController : public Event {
    private:
     // FIXME: speed and turn axis are flipped in the drivetrain view.
-    input::Analog drive_speed = input::Analog(0);
-    input::Analog drive_turn = input::Analog(1);
+    // FIXME: put definition in constructor.
+    InputAnalog drive_speed = InputAnalog(0);
+    InputAnalog drive_turn = InputAnalog(1);
 
-    frc2020::DriveTrain& drivetrain;
+    InputDigital toggle_drive_straight = InputDigital(2);
+    InputDigital toggle_drive_turn = InputDigital(3);
+
+    DriveTrain* drivetrain;
 
    public:
-    HumanDriveController(frc2020::DriveTrain& drivetrain) : drivetrain(drivetrain) {}
+    HumanDriveController();
 
-    void initialize() {
-        // drive_speed.isDeadZoned = true;
-        drive_speed.deadZone = 0.15;
+    void initialize();
 
-        // drive_turn.isDeadZoned = true;
-        drive_turn.deadZone = 0.15;
+    void deinitialize();
 
-        input::add<input::Analog>(&drive_speed);
-        input::add<input::Analog>(&drive_turn);
+    void update();
 
-        m_isInitialized = true;
-        std::cout << "HumanDriveController initialized." << std::endl;
-    }
-    void deinitialize() {
-        input::remove<input::Analog>(&drive_speed);
-        input::remove<input::Analog>(&drive_turn);
-    }
-
-    void update() {
-        drivetrain.driveArcade(drive_speed.value * 0.4, drive_turn.value * 0.4);
-    }
-
-    bool updateCondition() {
-        return c_robotState == RobotState::TELEOP || c_robotState == RobotState::TESTING;
-    }
+    bool condition();
 };
-}  // namespace frc2020

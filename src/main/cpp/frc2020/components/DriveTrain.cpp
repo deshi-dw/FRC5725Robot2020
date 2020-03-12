@@ -1,12 +1,13 @@
-#include <frc2020/components/DriveTrain.h>
 #include <cerberus/Hardware.h>
-#include <cerberus/Settings.h>
-
+#include <cerberus/Logger.h>
+#include <cerberus/ConfigManager.h>
 #include <frc/Spark.h>
-
+#include <frc2020/Robot.h>
+#include <frc2020/components/DriveTrain.h>
 #include <stdio.h>
 
-namespace frc2020 {
+#include <iostream>
+
 DriveTrain::DriveTrain() {}
 
 DriveTrain::~DriveTrain() {}
@@ -14,10 +15,10 @@ DriveTrain::~DriveTrain() {}
 void DriveTrain::initialize() {
     // cfg::load(settingsPath);
 
-    cfg::get<int>("hardware::motor_right1::pin", pin_right1);
-    cfg::get<int>("hardware::motor_right2::pin", pin_right2);
-    cfg::get<int>("hardware::motor_left1::pin", pin_left1);
-    cfg::get<int>("hardware::motor_left2::pin", pin_left2);
+    Robot::config->get<int>("hardware::motor_right1::pin", pin_right1);
+    Robot::config->get<int>("hardware::motor_right2::pin", pin_right2);
+    Robot::config->get<int>("hardware::motor_left1::pin", pin_left1);
+    Robot::config->get<int>("hardware::motor_left2::pin", pin_left2);
 
     pin_right1 = 2;
     pin_right2 = 3;
@@ -28,14 +29,15 @@ void DriveTrain::initialize() {
     motor_right2 = new frc::Spark(pin_right2);
     motor_left1 = new frc::Spark(pin_left1);
     motor_left2 = new frc::Spark(pin_left2);
+
+    Robot::logger->println(Logger::info, "[DriveTrain] successfully initialized.");
 }
+
 void DriveTrain::deinitialize() {
 	delete motor_right1;
 	delete motor_right2;
 	delete motor_left1;
 	delete motor_left2;
-
-    std::cout << "Drivetrain initialized." << std::endl;
 }
 
 void DriveTrain::driveArcade(const double& speed, const double& turn) {
@@ -55,4 +57,6 @@ void DriveTrain::driveTank(const double& right, const double& left) {
 
 void DriveTrain::update() {}
 
-}  // namespace frc2020
+bool DriveTrain::condition() {
+    return Robot::getRobotState() != SHUTTING_DOWN;
+}

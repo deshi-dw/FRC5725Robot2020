@@ -5,89 +5,101 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <frc2020/Robot.h>
-
-#include <util/RobotState.h>
-#include <cerberus/Events.h>
+#include <CompilerSettings.h>
+#include <cerberus/EventManager.h>
 #include <cerberus/Hardware.h>
-#include <cerberus/Inputs.h>
+#include <cerberus/InputManager.h>
+#include <cerberus/ConfigManager.h>
+#include <cerberus/Logger.h>
 #include <cerberus/Networking.h>
-#include <cerberus/Components.h>
-
+#include <frc/Joystick.h>
+#include <frc2020/Robot.h>
 #include <frc2020/components/DriveTrain.h>
-#include <frc2020/components/Shooter.h>
 #include <frc2020/components/Intake.h>
-
+#include <frc2020/components/Shooter.h>
 #include <frc2020/controllers/HumanDriveController.h>
-#include <frc2020/controllers/HumanShooterController.h>
 #include <frc2020/controllers/HumanIntakeController.h>
-
+#include <frc2020/controllers/HumanShooterController.h>
+#include <frc2020/events/EventLogMotion.h>
 #include <frc2020/events/EventTest.h>
 
-#include <frc/Joystick.h>
+#include <iostream>
 #include <sstream>
 #include <string>
 
-frc::Joystick joystick = frc::Joystick(0);
-EventTest eventTest = EventTest();
+double Robot::m_robotTime = 0.0;
+RobotState Robot::m_robotState = RobotState::BOOTING_UP;
 
-frc2020::DriveTrain drivetrain;
-frc2020::Shooter shooter;
-frc2020::Intake intake;
+EventManager* Robot::events = new EventManager();
+InputManager* Robot::inputs = new InputManager();
+ConfigManager* Robot::config = new ConfigManager();
 
-// wpi::TCPStream tcp = wpi::TCPStream(socket(PF_INET, SOCK_STREAM, 0), );
+cerberus::Logger* Robot::logger = new cerberus::Logger();
 
-frc2020::HumanDriveController driveController = frc2020::HumanDriveController(drivetrain);
-frc2020::HumanShooterController shooterController = frc2020::HumanShooterController(shooter);
-frc2020::HumanIntakeController intakeController = frc2020::HumanIntakeController(intake);
+RobotState Robot::getRobotState() {
+    return m_robotState;
+}
+
+double Robot::getRobotTime() {
+    return m_robotTime;
+}
 
 void Robot::RobotInit() {
-	std::cout << "test" << std::endl;
-    // net::initialize();
-    events::add(&eventTest);
-	std::cout << "Events added." << std::endl;
+    logger->println(cerberus::Logger::info, "Robot Initializing...");
+    logger->println();
 
-	components::add(&drivetrain);
-	components::add(&shooter);
-	components::add(&intake);
+    logger->println(cerberus::Logger::info, "adding events...");
 
-	components::add(&driveController);
-	components::add(&shooterController);
-	components::add(&intakeController);
-	components::initialize();
-	std::cout << "Components added." << std::endl;
+    events->add(new EventTest());
+
+    events->add(new DriveTrain());
+    events->add(new Shooter());
+    events->add(new Intake());
+
+    events->add(new HumanDriveController());
+    events->add(new HumanShooterController());
+    events->add(new HumanIntakeController());
+
+    logger->println(cerberus::Logger::info, "%u events added.", events->size());
+    logger->println();
+
+    events->update();
+
+    logger->println(cerberus::Logger::info, "Robot Initialization Complete.");
 }
 
 void Robot::RobotPeriodic() {
+    m_robotTime = this->GetPeriod().value();
     // std::cout << "robotTime: " << this->GetPeriod().value() << std::endl;
 }
 
 void Robot::DisabledInit() {
-	c_robotState = RobotState::DISABLED;
-	std::cout << "robot state: DISABLED" << std::endl;
-	// components::deinitialize();
+    m_robotState = RobotState::DISABLED;
+
+    logger->println(cerberus::Logger::info, "RobotState = DISABLED");
 }
 
 void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() {
-	c_robotState = RobotState::AUTONOMOUS;
+    m_robotState = RobotState::AUTONOMOUS;
+    logger->println(cerberus::Logger::info, "RobotState = AUTONOMOUS");
 }
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-	c_robotState = RobotState::TELEOP;
+    m_robotState = RobotState::TELEOP;
+    logger->println(cerberus::Logger::info, "RobotState = TELEOP");
 }
 void Robot::TeleopPeriodic() {}
 
 void Robot::TestInit() {
-	c_robotState = RobotState::TESTING;
+    m_robotState = RobotState::TESTING;
+    logger->println(cerberus::Logger::info, "RobotState = TESTING");
 }
 void Robot::TestPeriodic() {
-    // net::update();
-    components::update();
-    input::update();
-    events::update();
+    inputs->update();
+    events->update();
 }
 
 #ifndef RUNNING_FRC_TESTS

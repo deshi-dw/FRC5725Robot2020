@@ -1,52 +1,32 @@
 #pragma once
 
-#include <util/RobotState.h>
-#include <cerberus/Component.h>
-#include <cerberus/Inputs.h>
-#include <frc2020/components/Intake.h>
+class Intake;
 
-namespace frc2020 {
-class HumanIntakeController : public Component {
-    private:
-    input::Digital input_up = input::Digital(1);
-    input::Digital input_down = input::Digital(1);
-    input::Analog input_pullySpeed = input::Analog(5);
+namespace cerberus {
+struct InputDigital;
+}  // namespace cerberus
 
-	frc2020::Intake& intake;
+#include <cerberus/Event.h>
 
-    public:
-	HumanIntakeController(frc2020::Intake& intake) : intake(intake) {}
+using namespace cerberus;
 
-    void initialize() {
-        input::add<input::Digital>(&input_up);
-        input::add<input::Digital>(&input_down);
-        input::add<input::Analog>(&input_pullySpeed);
-		
-        std::cout << "HumanIntakeController initialized." << std::endl;
-    }
+class HumanIntakeController : public Event {
+   private:
+    // FIXME: put definition in constructor.
+    InputDigital input_up = InputDigital(1);
+    InputDigital input_down = InputDigital(1);
+    InputAnalog input_pullySpeed = InputAnalog(5);
 
-    void deinitialize() {
-        input::remove<input::Digital>(&input_up);
-        input::remove<input::Digital>(&input_down);
-        input::remove<input::Analog>(&input_pullySpeed);
-    }
+    Intake* intake;
 
-    void update() {
-        if(input_up.value) {
-		    intake.setState(Intake::State::UP);
-        }
-        else if(input_down.value) {
-		    intake.setState(Intake::State::DOWN);
-        }
-        else {
-		    intake.setState(Intake::State::IDLE);
-        }
+   public:
+    HumanIntakeController();
 
-        intake.setPulySpeed(input_pullySpeed.value * 0.6);
-    }
+    void initialize();
 
-	bool updateCondition() {
-		return c_robotState == RobotState::TELEOP || c_robotState == RobotState::TESTING;
-	}
+    void deinitialize();
+
+    void update();
+
+    bool condition();
 };
-}

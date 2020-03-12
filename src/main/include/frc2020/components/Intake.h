@@ -1,20 +1,17 @@
 #pragma once
 
-#include <cerberus/Component.h>
-
+#include <cerberus/Event.h>
 #include <frc/Spark.h>
 #include <rev/CANSparkMax.h>
 
 #include <string>
 
-namespace frc2020 {
-
-class Intake : public Component {
+class Intake : public Event {
    private:
     const std::string settingsPath = "conf/intake.rcfg";
-	frc::Spark* motor;
-
-	rev::CANSparkMax* motor_pully1;
+  
+    frc::Spark* motor;
+    rev::CANSparkMax* motor_pully1;
 
    public:
     enum State {
@@ -33,12 +30,13 @@ class Intake : public Component {
 
     Intake();
     ~Intake();
-    
+
     void initialize();
     void deinitialize();
     void update();
-    
+  
+    bool condition();
+
     void setState(Intake::State newState);
     void setPulySpeed(double newSpeed);
 };
-}  // namespace frc2020

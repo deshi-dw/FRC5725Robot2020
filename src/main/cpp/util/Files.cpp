@@ -83,4 +83,4 @@ bool fileExists(const std::string& path) {
         return false;
     }
 }
-}  // namespace Files
+}  // namespace files

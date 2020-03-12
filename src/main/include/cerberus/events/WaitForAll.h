@@ -1,15 +1,17 @@
 #pragma once
 
-#include <vector>
-
 #include <cerberus/Event.h>
 
-class WaitForAll : public events::Event {
-	public:
-	WaitForAll(std::vector<Event> &events);
+#include <vector>
 
-	private:
-	std::vector<Event> &events;
+namespace cerberus {
 
+class WaitForAll : public Event {
+   public:
+    WaitForAll(std::vector<Event>& events);
+
+   private:
+    std::vector<Event>& events;
 };
 
+}  // namespace cerberus
