@@ -33,7 +33,7 @@ void HumanShooterController::deinitialize() {
 }
 
 void HumanShooterController::update() {
-    shooter->shoot(speed_top.value, speed_bottom.value);
+    shooter->shoot(speed_top.value * -0.6, speed_bottom.value * -0.6);
 }
 
 bool HumanShooterController::condition() {

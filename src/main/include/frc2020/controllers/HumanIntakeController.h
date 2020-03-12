@@ -13,7 +13,9 @@ using namespace cerberus;
 class HumanIntakeController : public Event {
    private:
     // FIXME: put definition in constructor.
-    InputDigital input_toggle = InputDigital(1);
+    InputDigital input_up = InputDigital(1);
+    InputDigital input_down = InputDigital(1);
+    InputAnalog input_pullySpeed = InputAnalog(5);
 
     Intake* intake;
 

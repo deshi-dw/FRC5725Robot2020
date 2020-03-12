@@ -2,6 +2,7 @@
 
 #include <cerberus/Event.h>
 #include <frc/Spark.h>
+#include <rev/CANSparkMax.h>
 
 #include <string>
 
@@ -9,12 +10,22 @@ class Intake : public Event {
    private:
     const std::string settingsPath = "conf/intake.rcfg";
     frc::Spark* motor;
-
-    bool m_isOn;
+    rev::CANSparkMax* motor_pully1;
 
    public:
+    enum State {
+        IDLE,
+        UP,
+        DOWN
+    };
+
+    State state = State::IDLE;
+
     int channel = 0;
+    int channel_pully1 = 0;
+
     double speed = 0.0;
+    double speed_pully = 0.0;
 
     Intake();
     ~Intake();
@@ -24,5 +35,6 @@ class Intake : public Event {
     void update();
     bool condition();
 
-    void toggle(bool isOn);
+    void setState(Intake::State newState);
+    void setPulySpeed(double newSpeed);
 };

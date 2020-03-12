@@ -19,23 +19,31 @@ void HumanIntakeController::initialize() {
         Robot::logger->println(Logger::warning, "[HumanIntakeController] failed to initialize.");
     }
 
-    Robot::inputs->add<InputDigital>(&input_toggle);
+    Robot::inputs->add<InputDigital>(&input_up);
+    Robot::inputs->add<InputDigital>(&input_down);
+    Robot::inputs->add<InputAnalog>(&input_pullySpeed);
 
     Robot::logger->println(Logger::warning, "[HumanIntakeController] successfully initialized.");
 }
 
 void HumanIntakeController::deinitialize() {
-    Robot::inputs->remove<InputDigital>(&input_toggle);
+    Robot::inputs->remove<InputDigital>(&input_up);
+    Robot::inputs->remove<InputDigital>(&input_down);
+    Robot::inputs->remove<InputAnalog>(&input_pullySpeed);
 
     Robot::logger->println(Logger::warning, "[HumanIntakeController] successfully deinitialized.");
 }
 
 void HumanIntakeController::update() {
-    if (input_toggle.value) {
-        intake->toggle(true);
+    if (input_up.value) {
+        intake->setState(Intake::State::UP);
+    } else if (input_down.value) {
+        intake->setState(Intake::State::DOWN);
     } else {
-        intake->toggle(false);
+        intake->setState(Intake::State::IDLE);
     }
+
+    intake->setPulySpeed(input_pullySpeed.value * 0.6);
 }
 
 bool HumanIntakeController::condition() {

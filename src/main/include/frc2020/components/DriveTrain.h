@@ -15,7 +15,7 @@ class DriveTrain : public Event {
     int pin_left2;
 
     frc::Spark* motor_right1;
-    // frc::Spark* motor_right2;
+    frc::Spark* motor_right2;
     frc::Spark* motor_left1;
     frc::Spark* motor_left2;
 

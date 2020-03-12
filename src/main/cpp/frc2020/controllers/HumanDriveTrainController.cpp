@@ -25,6 +25,9 @@ void HumanDriveController::initialize() {
 
     Robot::inputs->add<InputAnalog>(&drive_speed);
     Robot::inputs->add<InputAnalog>(&drive_turn);
+    
+    Robot::inputs->add<InputDigital>(&toggle_drive_straight);
+    Robot::inputs->add<InputDigital>(&toggle_drive_turn);
 
     Robot::logger->println(Logger::warning, "[HumanDriveController] successfully initialized.");
 }
@@ -36,7 +39,15 @@ void HumanDriveController::deinitialize() {
 }
 
 void HumanDriveController::update() {
-    drivetrain->driveArcade(drive_speed.value * 0.4, drive_turn.value * 0.4);
+    if(toggle_drive_straight.value == true) {
+        drivetrain->driveArcade(0.0, drive_speed.value * 0.6);
+    }
+    else if(toggle_drive_turn.value == true) {
+        drivetrain->driveArcade(drive_turn.value * 0.6, 0.0);
+    }
+    else {
+        drivetrain->driveArcade(drive_speed.value * 0.2, drive_turn.value * 0.6);
+    }
 }
 
 bool HumanDriveController::condition() {

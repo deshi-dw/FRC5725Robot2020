@@ -17,6 +17,9 @@ class HumanDriveController : public Event {
     InputAnalog drive_speed = InputAnalog(0);
     InputAnalog drive_turn = InputAnalog(1);
 
+    InputDigital toggle_drive_straight = InputDigital(2);
+    InputDigital toggle_drive_turn = InputDigital(3);
+
     DriveTrain* drivetrain;
 
    public:
