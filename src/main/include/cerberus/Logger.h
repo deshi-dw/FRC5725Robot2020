@@ -76,6 +76,11 @@ class Logger {
         print(flag, message + "\r\n", args...);
     }
 
+    template <typename... Args>
+    void println(const std::string& message, Args... args) {
+        print(0, message + "\r\n", args...);
+    }
+
     void println();
 
     std::vector<const std::pair<uint32_t, const std::string>*> getLogs(uint32_t flag);
